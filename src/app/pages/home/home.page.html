@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Recomendación del Día 🍹</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div *ngIf="cocktails">
+    <h2>Bebida con Alcohol</h2>
+    <ion-card>
+      <ion-img [src]="cocktails.alcoholic.strDrinkThumb"></ion-img>
+      <ion-card-header>
+        <ion-card-title>{{ cocktails.alcoholic.strDrink }}</ion-card-title>
+      </ion-card-header>
+    </ion-card>
+
+    <h2>Bebida sin Alcohol</h2>
+    <ion-card>
+      <ion-img [src]="cocktails.nonAlcoholic.strDrinkThumb"></ion-img>
+      <ion-card-header>
+        <ion-card-title>{{ cocktails.nonAlcoholic.strDrink }}</ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </div>
+
+  <div *ngIf="!cocktails">
+    <ion-spinner name="circles"></ion-spinner>
+    <p>Cargando bebidas del día...</p>
+  </div>
+
+  <ion-button expand="full" color="danger" (click)="logout()">Cerrar Sesión</ion-button>
+
+</ion-content>
