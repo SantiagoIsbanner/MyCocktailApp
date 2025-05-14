@@ -2,12 +2,14 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { FormControl, FormGroup, FormsModule, Validators } from '@angular/forms';
-import { ToastController } from '@ionic/angular';
+import { ToastController, ModalController } from '@ionic/angular';
+import { ModalComponent } from '../../components/modal/modal.component';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
-  standalone:false
+  standalone: false
 })
 export class LoginPage {
   loginForm: FormGroup;
@@ -15,12 +17,20 @@ export class LoginPage {
   constructor(
     private authService: AuthService, 
     private router: Router,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private modalCtrl: ModalController
   ) {
     this.loginForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.minLength(6)])
     });
+  }
+
+  async abrirModal() {
+    const modal = await this.modalCtrl.create({
+      component: ModalComponent
+    });
+    return await modal.present();
   }
 
   login() {
@@ -68,8 +78,6 @@ toastError(position: 'top' | 'middle' | 'bottom') {//Toast para mensaje de error
       position: position
       }).then((toast: any) => toast.present());
     }
-
-
-   
 }
+
 
