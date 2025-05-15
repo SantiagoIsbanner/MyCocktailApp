@@ -1,12 +1,7 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>login</ion-title>
-  </ion-toolbar>
-</ion-header>
 
 <ion-content class ="ion-padding">
   
-    <ion-title class="title_login">MyCocktailApp</ion-title>
+    <ion-title class="title_login" style="margin-top:40px;">MyCocktailApp</ion-title>
 
 <form class="form_login" [formGroup]="loginForm">
   <ion-item class="input_login_email">
@@ -19,7 +14,17 @@
 
   <ion-item class="input_login_password">
     <ion-label  position="floating">Contraseña</ion-label>
-    <ion-input type="password" formControlName="password" required></ion-input>
+    <ion-input 
+      [type]="mostrarPassword ? 'text' : 'password'"              
+      formControlName="password" 
+      required>
+    </ion-input>
+    <ion-icon
+      [name]="mostrarPassword ? 'eye' : 'eye-off'"
+      slot="end"
+      (click)="toggleMostrarContrasena()"
+      class="password-toggle-icon">
+    </ion-icon>
   </ion-item>
   <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message"><!--verifica si la contraseña es valida-->
     Por favor ingrese una contraseña válida
@@ -44,7 +49,7 @@
   </div>
 
   <div class="btn_register">
-    ¿No tienes cuenta? <a (click)="abrirModal()">Regístrate</a>
+    ¿No tenés cuenta? <a (click)="abrirModal()">Regístrate</a>
   </div>
 
 </form>

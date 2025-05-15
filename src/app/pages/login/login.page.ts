@@ -78,6 +78,12 @@ toastError(position: 'top' | 'middle' | 'bottom') {//Toast para mensaje de error
       position: position
       }).then((toast: any) => toast.present());
     }
+
+  mostrarPassword = false;
+
+  toggleMostrarContrasena() {
+    this.mostrarPassword = !this.mostrarPassword;
+}
 }
 
 

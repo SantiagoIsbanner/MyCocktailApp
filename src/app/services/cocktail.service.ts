@@ -43,7 +43,7 @@ export class CocktailService {
       };
 
       await this.firestore.collection('dailyCocktails').doc('today').set(newData);
-      return data;
+      return newData;
       }
 
     }

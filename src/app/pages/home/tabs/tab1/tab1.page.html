@@ -1,0 +1,39 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Home</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  
+  <div *ngIf="cocktails">
+    <h2>Bebida con Alcohol</h2>
+    <ion-card>
+      <ion-img [src]="cocktails.alcoholic.strDrinkThumb"></ion-img>
+      <ion-card-header>
+        <ion-card-title>{{ cocktails.alcoholic.strDrink }}</ion-card-title>
+      </ion-card-header>
+    </ion-card>
+
+    <h2>Bebida sin Alcohol</h2>
+    <ion-card>
+      <ion-img [src]="cocktails.nonAlcoholic.strDrinkThumb"></ion-img>
+      <ion-card-header>
+        <ion-card-title>{{ cocktails.nonAlcoholic.strDrink }}</ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </div>
+
+  <div *ngIf="!cocktails">
+    <ion-spinner name="circles"></ion-spinner>
+    <p>Cargando bebidas del día...</p>
+  </div>
+
+  <ion-button expand="full" color="danger" (click)="logout()">Cerrar Sesión</ion-button>
+
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Home</ion-title>
+    </ion-toolbar>
+  </ion-header>
+</ion-content>

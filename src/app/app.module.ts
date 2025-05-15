@@ -15,13 +15,12 @@ import { LoginPageModule } from './pages/login/login.module';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 
-
-
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, IonicModule.forRoot(),AppRoutingModule, AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFireAuthModule,HttpClientModule,LoginPageModule,AngularFirestoreModule,FormsModule,ReactiveFormsModule],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+    AngularFireAuthModule,HttpClientModule,LoginPageModule,AngularFirestoreModule,FormsModule,ReactiveFormsModule,],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy,  },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

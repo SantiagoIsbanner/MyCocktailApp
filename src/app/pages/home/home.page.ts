@@ -9,22 +9,12 @@ import { Router } from '@angular/router';
   standalone: false,
 })
 export class HomePage {
-  cocktails: any;
-  constructor(private cocktailService: CocktailService, private authService:AuthService, private router:Router) {}
+
+  constructor() {}
 
   ngOnInit() {
-    this.cocktailService.getDailyCocktails().then(data => {
-      this.cocktails = data;
-    });
   }
  
 
-
-
-  logout(){
-    this.authService.logout()
-    .then(()=>this.router.navigate(['/login']))
-    .catch(error=>alert("Error al cerrar sesion: "+error.message))
-  }
 }
 
