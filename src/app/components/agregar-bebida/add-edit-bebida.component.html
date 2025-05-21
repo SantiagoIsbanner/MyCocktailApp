@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ bebida ? 'Editar' : 'Agregar' }} Bebida</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-input [(ngModel)]="nombre" placeholder="Nombre"></ion-input>
+  <ion-textarea [(ngModel)]="ingredientes" placeholder="Ingredientes"></ion-textarea>
+  <ion-textarea [(ngModel)]="descripcion" placeholder="Descripción"></ion-textarea>
+
+  <div *ngIf="foto">
+    <img [src]="foto" class="preview-img">
+    <ion-button fill="clear" color="danger" (click)="removePhoto()">
+      <ion-icon name="trash"></ion-icon>
+    </ion-button>
+  </div>
+
+  <ion-button fill="clear" (click)="takePhoto(CameraSource.Camera)" color="dark">
+    <ion-icon slot="icon-only" name="camera"></ion-icon>
+  </ion-button>
+
+  <ion-button fill="clear" (click)="takePhoto(CameraSource.Photos)" color="dark">
+    <ion-icon slot="icon-only" name="image"></ion-icon>
+  </ion-button>
+
+  <ion-button expand="block" color="primary" (click)="save()">
+    {{ bebida ? 'Guardar Cambios' : 'Agregar Bebida' }}
+  </ion-button>
+</ion-content>

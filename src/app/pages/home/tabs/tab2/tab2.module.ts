@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { Tab2PageRoutingModule } from './tab2-routing.module';
 
 import { Tab2Page } from './tab2.page';
+import { AddEditBebidaModule } from 'src/app/components/agregar-bebida/add-edit-bebida.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    Tab2PageRoutingModule
+    Tab2PageRoutingModule,
+    AddEditBebidaModule
   ],
   declarations: [Tab2Page]
 })

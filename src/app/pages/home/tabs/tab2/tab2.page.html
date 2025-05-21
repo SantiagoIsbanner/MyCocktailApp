@@ -1,13 +1,61 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Busqueda</ion-title>
+    <ion-title>Bebidas</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Busqueda</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+  <div class="card" *ngFor="let bebida of bebidas">
+    <img [src]="bebida.foto" class="image">
+
+    <div class="top-bar">
+      <div class="user-star">
+        <ion-button fill="clear" color="dark" (click)="alert()">
+          <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" color="dark" (click)="alert()">
+          <ion-icon slot="icon-only" name="star"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div class="actions">
+        <ion-button fill="clear" color="dark" (click)="openModal(bebida)">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" color="dark" (click)="deleteBebida(bebida.id)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-button>
+      </div>
+
+    </div>
+
+     <div class="card-content">
+        <h2>{{ bebida.nombre }}</h2>
+        <p><strong>Ingredientes: </strong> {{ bebida.ingredientes }}</p>
+        <p><strong>Descripción: </strong>{{ bebida.descripcion }}</p>
+      </div>
+
+  </div>
+
+  <div class="pagination">
+    <ion-button fill="clear" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+      <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+    </ion-button>
+
+    <ion-button fill="clear" *ngFor="let page of [].constructor(totalPages); let i = index"
+      fill="{{ currentPage === i + 1 ? 'solid' : 'outline' }}" (click)="goToPage(i + 1)">
+      {{ i + 1 }}
+    </ion-button>
+
+    <ion-button fill="clear" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+      <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+    </ion-button>
+  </div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openModal()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
