@@ -13,4 +13,10 @@ export class Tab3Page implements OnInit {
   ngOnInit() {
   }
 
+   mostrarPassword = false;
+
+  toggleMostrarContrasena() {
+    this.mostrarPassword = !this.mostrarPassword;
+  }
+
 }

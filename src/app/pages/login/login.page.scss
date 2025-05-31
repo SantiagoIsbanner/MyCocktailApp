@@ -56,32 +56,48 @@
   .input_login_email {
     border-radius: 7px;
     height: 50px;
-    --border-color: #666666;
-    --border-width: 1px;
-    --border-style: solid;
-
-    ion-label {
-        font-size: 14px;
+    border-style: solid;
+    border-color: #666666;
+    border-width: 1px;
+    
+    
+    .color_label_email{
+      --ion-color-primary: #ffffff;
+      --ion-color-success: #ffffff;
+      --ion-color-danger: #ffffff;
     }
+   
+    
 
     ion-input {
-        font-size: 16px;
+      
+        font-size: 14px;
+        
     }
   }
 
   .input_login_password {
     border-radius: 7px;
     height: 50px;
-    --border-color: #666666;
-    --border-width: 1px;
-    --border-style: solid;
-
+    border-style: solid;
+    border-color: #666666;
+    border-width: 1px;
+    align-items: inherit;
+    
     ion-label {
-        font-size: 14px;
+      color: #606770;
+      font-size: 14px;
     }
 
     ion-input {
-        font-size: 16px;
+      font-size: 14px;
+      color: #ffffff;
+    }
+
+    .color_label_password{
+      --ion-color-primary: #ffffff;
+      --ion-color-success: #ffffff;
+      --ion-color-danger: #ffffff;
     }
   }
 
@@ -120,3 +136,6 @@
     font-size: 14px;
     opacity: 0.8;
 }
+
+
+

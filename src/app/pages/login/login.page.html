@@ -4,17 +4,20 @@
     <ion-title class="title_login" style="margin-top:40px;">MyCocktailApp</ion-title>
 
 <form class="form_login" [formGroup]="loginForm">
-  <ion-item class="input_login_email">
-    <ion-label class="label_login_email" position="floating">Email</ion-label>
-    <ion-input  type="email" formControlName="email" required></ion-input>
+  <div>
+    <ion-item class="input_login_email">
+    <ion-input labelPlacement="floating" label="Email" type="email" formControlName="email" required class="test"></ion-input>
   </ion-item>
   <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error-message"><!--verifica si el email es valido-->
     Por favor ingrese un email válido
   </div>
-
+  
+  </div> 
+  
+  
   <ion-item class="input_login_password">
-    <ion-label  position="floating">Contraseña</ion-label>
-    <ion-input 
+    
+    <ion-input  labelPlacement="floating" label="Contraseña"  class="test"
       [type]="mostrarPassword ? 'text' : 'password'"              
       formControlName="password" 
       required>
@@ -23,7 +26,7 @@
       [name]="mostrarPassword ? 'eye' : 'eye-off'"
       slot="end"
       (click)="toggleMostrarContrasena()"
-      class="password-toggle-icon">
+      >
     </ion-icon>
   </ion-item>
   <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message"><!--verifica si la contraseña es valida-->
@@ -52,9 +55,13 @@
     ¿No tenés cuenta? <a (click)="abrirModal()">Regístrate</a>
   </div>
 
+
 </form>
 
 
+
+
+</form>
 
 
 
