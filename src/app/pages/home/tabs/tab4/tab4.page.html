@@ -5,15 +5,31 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+  <!--este es el perfil de usuario-->
+  <div class="profile-container">
+    <div class="user-info" *ngIf="userData">
+      <div class="avatar-container">
+        <img [src]="'https://ui-avatars.com/api/?name=' + getUsernameFromEmail() + '&background=random'" alt="Foto de perfil" class="user-avatar"><!--foto del usuario test para q se rompa, toma 2 letras-->
+      </div>
+      <h2 class="user-name">{{ getUsernameFromEmail() }}</h2> <!--tag del usuario test-->
+
+      <p class="user-email">{{userData?.email}}</p><!--muestro email del usuario-->
+      
+      <div class="settings-icon">
+        <ion-icon name="settings-outline"></ion-icon>
+      </div>
+    </div>
+
+    <!--aca va lista de bebeidas favoritas-->
+
+
+
     
-  </ion-header>
-
-  <!--
-  Contenido de la pagina 
-  Aca estaria la de Mi Perfil
-  -->
-
-
-
+    <div class="logout-button-container">
+      <ion-button expand="block" color="light" class="logout-button" (click)="logout()">
+        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+        Cerrar Sesion
+      </ion-button>
+    </div>
+  </div>
 </ion-content>
