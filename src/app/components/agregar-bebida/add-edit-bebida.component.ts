@@ -12,7 +12,8 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 export class AddEditBebidaComponent {
   @Input() bebida?: Bebida;
   nombre = '';
-  ingredientes = '';
+  nuevoIngrediente = '';
+  ingredientes: string[] = [];
   descripcion = '';
   foto: string | null = null;
 
@@ -23,10 +24,24 @@ export class AddEditBebidaComponent {
   ngOnInit() {
     if (this.bebida) {
       this.nombre = this.bebida.nombre;
-      this.ingredientes = this.bebida.ingredientes;
+      this.ingredientes = Array.isArray(this.bebida.ingredientes)
+        ? this.bebida.ingredientes
+        : this.bebida.ingredientes.split(',').map(i => i.trim());
       this.descripcion = this.bebida.descripcion;
       this.foto = this.bebida.foto;
     }
+  }
+
+  addIngrediente() {
+    const ingrediente = this.nuevoIngrediente.trim();
+    if (ingrediente) {
+      this.ingredientes.push(ingrediente);
+      this.nuevoIngrediente = '';
+    }
+  }
+
+  removeIngrediente(index: number) {
+    this.ingredientes.splice(index, 1);
   }
 
   async takePhoto(source: CameraSource) {
@@ -49,7 +64,7 @@ export class AddEditBebidaComponent {
   }
 
   save() {
-    if (!this.nombre || !this.ingredientes || !this.descripcion || !this.foto) {
+    if (!this.nombre || this.ingredientes.length === 0 || !this.descripcion || !this.foto) {
       alert('Todos los campos son obligatorios');
       return;
     }

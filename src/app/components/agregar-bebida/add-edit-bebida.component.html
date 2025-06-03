@@ -9,12 +9,28 @@
 
 <ion-content class="ion-padding">
   <ion-input [(ngModel)]="nombre" placeholder="Nombre"></ion-input>
-  <ion-textarea [(ngModel)]="ingredientes" placeholder="Ingredientes"></ion-textarea>
+
+  <ion-item>
+    <ion-input [(ngModel)]="nuevoIngrediente" placeholder="Nuevo ingrediente"></ion-input>
+    <ion-button fill="clear" (click)="addIngrediente()" slot="end">
+      <ion-icon name="add-circle-outline"></ion-icon>
+    </ion-button>
+  </ion-item>
+
+  <ion-list>
+    <ion-item *ngFor="let ing of ingredientes; let i = index">
+      <ion-label>{{ ing }}</ion-label>
+      <ion-button fill="clear" color="danger" (click)="removeIngrediente(i)" slot="end">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
   <ion-textarea [(ngModel)]="descripcion" placeholder="Descripción"></ion-textarea>
 
   <div *ngIf="foto">
     <img [src]="foto" class="preview-img">
-    <ion-button fill="clear" color="danger" (click)="removePhoto()">
+    <ion-button horizontal="end" fill="clear" color="danger" (click)="removePhoto()">
       <ion-icon name="trash"></ion-icon>
     </ion-button>
   </div>

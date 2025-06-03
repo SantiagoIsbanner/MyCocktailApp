@@ -33,5 +33,34 @@
  */
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
+@import "@ionic/angular/css/palettes/dark.class.css"; 
+/* @import "@ionic/angular/css/palettes/dark.system.css"; */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap'); /*fuente de la app*/
+
+
+:root {
+    --ion-font-family: 'Inter', sans-serif;
+    --ion-background-color: #ffffff;
+    --ion-text-color: #000000;
+    --ion-color-primary: #FF6B6B;
+    --card-background: #ffffff;
+    --card-topbar-bg: #ffffff;
+    --card-title-color: #FF6B6B;
+    --card-text-color: #333333;
+    --card-icon-color: #000000;
+    --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+  
+[data-theme='dark'] {
+    --ion-font-family: 'Inter', sans-serif;
+    --ion-background-color: #1e1e1e;
+    --ion-text-color: #ffffff;
+    --ion-color-primary: #FF6B6B;
+    --card-background: #2f2f2f;
+    --card-topbar-bg: #2f2f2f;
+    --card-title-color: #FF6B6B;
+    --card-text-color: #cdcdcd;
+    --card-icon-color: #ffffff;
+    --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
