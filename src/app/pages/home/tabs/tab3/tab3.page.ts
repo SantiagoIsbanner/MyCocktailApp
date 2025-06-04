@@ -19,28 +19,39 @@ export class Tab3Page implements OnInit {
   cocktailName: string = '';
   isModalOpen = false;
   selectedCocktail: any = null;
-  cocktails: any[] = []; 
-  bebidas$: Observable<Bebida[]>; // 🔥 Observable para bebidas estándar
+  cocktails: any[] = [];
+
+  bebidas$: Observable<Bebida[]>; // Observable para bebidas estándar
   bebidas: Bebida[] = [];
-  bebidasComunidad$: Observable<Bebida[]>; // 🔥 Observable para bebidas de la comunidad
-  bebidasComunidad: Bebida[] = []; // Lista paginada
+
+  bebidasComunidad$: Observable<Bebida[]>; // Observable para bebidas comunidad
+  bebidasComunidad: Bebida[] = [];
 
   currentPage = 1;
   perPage = 4;
   totalPages = 1;
 
-  constructor(private alertController:AlertController, private authService: AuthService,private firestoreService: FirestoreService, private bebidasService: BebidasService, private modalCtrl: ModalController, private cocktailService: CocktailService) 
-  {
+  constructor(
+    private alertController: AlertController,
+    private authService: AuthService,
+    private firestoreService: FirestoreService,
+    private bebidasService: BebidasService,
+    private modalCtrl: ModalController,
+    private cocktailService: CocktailService
+  ) {
+    // Inicializar observables para no depender solo de ngOnInit
     this.bebidas$ = this.firestoreService.getAllBebidas();
-  this.bebidasComunidad$ = this.firestoreService.getAllBebidasComunidad();
+    this.bebidasComunidad$ = this.firestoreService.getAllBebidasComunidad();
   }
 
   ngOnInit() {
-    // 🔥 Cargar bebidas estándar y comunidad
+    // Cargar bebidas estándar
     this.bebidas$ = this.firestoreService.getAllBebidas();
-    this.firestoreService.getAllBebidasComunidad().subscribe(bebidas => {
-      this.bebidasComunidad = bebidas;
-      this.totalPages = Math.ceil(this.bebidasComunidad.length / this.perPage);
+
+    // Cargar bebidas comunidad y calcular paginación
+    this.firestoreService.getAllBebidasComunidad().subscribe((bebidas) => {
+      this.bebidasComunidad = bebidas || [];
+      this.totalPages = Math.ceil(this.bebidasComunidad.length / this.perPage) || 1;
       this.loadBebidasPaginadas();
     });
   }
@@ -48,7 +59,7 @@ export class Tab3Page implements OnInit {
   async openModal(bebida?: Bebida) {
     const modal = await this.modalCtrl.create({
       component: AddEditBebidaComponent,
-      componentProps: { bebida }
+      componentProps: { bebida },
     });
 
     await modal.present();
@@ -56,49 +67,64 @@ export class Tab3Page implements OnInit {
     const { data } = await modal.onDidDismiss();
 
     if (data) {
-      await this.firestoreService.saveBebida(data);
-      this.ngOnInit(); // 🔥 Recargar bebidas después de guardar
+      try {
+        await this.firestoreService.saveBebida(data);
+        this.ngOnInit(); // Recargar bebidas luego de guardar
+      } catch (error) {
+        console.error('Error guardando bebida:', error);
+        this.showErrorAlert('Ocurrió un error al guardar la bebida.');
+      }
     }
   }
 
-editBebida(bebida: Bebida) {
-  const userId = this.authService.getUserId(); // 🔥 Obtener el UID del usuario actual
+  editBebida(bebida: Bebida) {
+    const userId = this.authService.getUserId();
 
-  if (bebida.userId === userId) {
-    this.openModal(bebida); // Solo permite editar si el usuario es el creador
-  } else {
-    this.showErrorAlert('No puedes editar esta bebida porque no eres su creador.');
+    if (bebida.userId === userId) {
+      this.openModal(bebida);
+    } else {
+      this.showErrorAlert('No puedes editar esta bebida porque no eres su creador.');
+    }
   }
-}
-async confirmDelete(bebida: Bebida) {
-  const userId = this.authService.getUserId(); // 🔥 Obtener ID de usuario actual
 
-  if (bebida.userId === userId) {
-    const alert = await this.alertController.create({
-      header: 'Confirmación',
-      message: `¿Seguro que deseas eliminar la bebida ${bebida.nombre}?`,
-      buttons: [
-        { text: 'Cancelar', role: 'cancel' },
-        { text: 'Eliminar', handler: () => this.deleteBebida(bebida.id) }
-      ]
-    });
+  async confirmDelete(bebida: Bebida) {
+    const userId = this.authService.getUserId();
 
-    await alert.present();
-  } else {
-    this.showErrorAlert('No puedes eliminar esta bebida porque no eres su creador.');
+    if (bebida.userId === userId) {
+      const alert = await this.alertController.create({
+        header: 'Confirmación',
+        message: `¿Seguro que deseas eliminar la bebida ${bebida.nombre}?`,
+        buttons: [
+          { text: 'Cancelar', role: 'cancel' },
+          { text: 'Eliminar', handler: () => this.deleteBebida(bebida.id) },
+        ],
+      });
+
+      await alert.present();
+    } else {
+      this.showErrorAlert('No puedes eliminar esta bebida porque no eres su creador.');
+    }
   }
-}
 
-deleteBebida(id: number) {
-  this.firestoreService.deleteBebida(id)
-    .then(() => console.log(`🗑️ Bebida ${id} eliminada`))
-    .catch(error => console.error('Error al eliminar la bebida:', error));
-}
+  async deleteBebida(id: number) {
+    try {
+      await this.firestoreService.deleteBebida(id);
+      console.log(`🗑️ Bebida ${id} eliminada`);
+      this.ngOnInit(); // Recargar lista después de borrar
+    } catch (error) {
+      console.error('Error al eliminar la bebida:', error);
+      this.showErrorAlert('Ocurrió un error al eliminar la bebida.');
+    }
+  }
 
   loadBebidasPaginadas() {
     const start = (this.currentPage - 1) * this.perPage;
-    this.bebidasComunidad$ = new Observable(observer => {
-      observer.next(this.bebidasComunidad.slice(start, start + this.perPage));
+    const paginadas = this.bebidasComunidad.slice(start, start + this.perPage);
+
+    // Crear nuevo observable para la página actual
+    this.bebidasComunidad$ = new Observable((observer) => {
+      observer.next(paginadas);
+      observer.complete();
     });
   }
 
@@ -123,8 +149,8 @@ deleteBebida(id: number) {
     }
   }
 
-  alert() {
-    console.log("alert");
+  toggleDetails(bebida: any) {
+    bebida.showDetails = !bebida.showDetails;
   }
 
   mostrarPassword = false;
@@ -133,19 +159,13 @@ deleteBebida(id: number) {
     this.mostrarPassword = !this.mostrarPassword;
   }
 
+  async showErrorAlert(mensaje: string) {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: mensaje,
+      buttons: ['OK'],
+    });
 
-    toggleDetails(bebida: any) {
-      bebida.showDetails = !bebida.showDetails;
-    }
-
-    async showErrorAlert(mensaje: string) {
-  const alert = await this.alertController.create({
-    header: 'Error',
-    message: mensaje,
-    buttons: ['OK']
-  });
-
-  await alert.present();
-}
-
+    await alert.present();
+  }
 }
