@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { Bebida } from 'src/app/models/bebida.model';
 import { BebidasService } from 'src/app/services/bebida.service';
 import { CocktailService } from 'src/app/services/cocktail.service';
 import { Observable } from 'rxjs';
 import { AddEditBebidaComponent } from 'src/app/components/agregar-bebida/add-edit-bebida.component';
 import { FirestoreService } from 'src/app/services/firestore.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   standalone: false,
@@ -19,10 +20,8 @@ export class Tab3Page implements OnInit {
   isModalOpen = false;
   selectedCocktail: any = null;
   cocktails: any[] = []; 
-
   bebidas$: Observable<Bebida[]>; // 🔥 Observable para bebidas estándar
   bebidas: Bebida[] = [];
-
   bebidasComunidad$: Observable<Bebida[]>; // 🔥 Observable para bebidas de la comunidad
   bebidasComunidad: Bebida[] = []; // Lista paginada
 
@@ -30,7 +29,7 @@ export class Tab3Page implements OnInit {
   perPage = 4;
   totalPages = 1;
 
-  constructor(private firestoreService: FirestoreService, private bebidasService: BebidasService, private modalCtrl: ModalController, private cocktailService: CocktailService) 
+  constructor(private alertController:AlertController, private authService: AuthService,private firestoreService: FirestoreService, private bebidasService: BebidasService, private modalCtrl: ModalController, private cocktailService: CocktailService) 
   {
     this.bebidas$ = this.firestoreService.getAllBebidas();
   this.bebidasComunidad$ = this.firestoreService.getAllBebidasComunidad();
@@ -62,9 +61,39 @@ export class Tab3Page implements OnInit {
     }
   }
 
-  deleteBebida(nombre: string) {
-    this.firestoreService.deleteBebida(nombre);
+editBebida(bebida: Bebida) {
+  const userId = this.authService.getUserId(); // 🔥 Obtener el UID del usuario actual
+
+  if (bebida.userId === userId) {
+    this.openModal(bebida); // Solo permite editar si el usuario es el creador
+  } else {
+    this.showErrorAlert('No puedes editar esta bebida porque no eres su creador.');
   }
+}
+async confirmDelete(bebida: Bebida) {
+  const userId = this.authService.getUserId(); // 🔥 Obtener ID de usuario actual
+
+  if (bebida.userId === userId) {
+    const alert = await this.alertController.create({
+      header: 'Confirmación',
+      message: `¿Seguro que deseas eliminar la bebida ${bebida.nombre}?`,
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        { text: 'Eliminar', handler: () => this.deleteBebida(bebida.id) }
+      ]
+    });
+
+    await alert.present();
+  } else {
+    this.showErrorAlert('No puedes eliminar esta bebida porque no eres su creador.');
+  }
+}
+
+deleteBebida(id: number) {
+  this.firestoreService.deleteBebida(id)
+    .then(() => console.log(`🗑️ Bebida ${id} eliminada`))
+    .catch(error => console.error('Error al eliminar la bebida:', error));
+}
 
   loadBebidasPaginadas() {
     const start = (this.currentPage - 1) * this.perPage;
@@ -103,4 +132,20 @@ export class Tab3Page implements OnInit {
   toggleMostrarContrasena() {
     this.mostrarPassword = !this.mostrarPassword;
   }
+
+
+    toggleDetails(bebida: any) {
+      bebida.showDetails = !bebida.showDetails;
+    }
+
+    async showErrorAlert(mensaje: string) {
+  const alert = await this.alertController.create({
+    header: 'Error',
+    message: mensaje,
+    buttons: ['OK']
+  });
+
+  await alert.present();
+}
+
 }

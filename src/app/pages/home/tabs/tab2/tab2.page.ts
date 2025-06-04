@@ -6,6 +6,7 @@ import { Bebida } from 'src/app/models/bebida.model';
 import { CocktailService } from 'src/app/services/cocktail.service';
 import { FavoritosService } from 'src/app/services/favoritos.service';
 import { AlertController } from '@ionic/angular';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   standalone: false,
@@ -22,7 +23,7 @@ selectedCocktail: any = null;
 cocktailIngredients: { ingredient: string, measure: string }[] = [];
 randomCocktail: any = null;
 
-  constructor(private bebidasService: BebidasService, private modalCtrl: ModalController, private cocktailService:CocktailService, private favoritosService: FavoritosService, private alertController: AlertController) { }
+  constructor(private authService:AuthService, private bebidasService: BebidasService, private modalCtrl: ModalController, private cocktailService:CocktailService, private favoritosService: FavoritosService, private alertController: AlertController) { }
 
  
 
@@ -139,9 +140,15 @@ ngOnInit() {
 }
 
 guardarCocktail(cocktail: any) {
+  const userId = this.authService.getUserId(); // 🔥 Obtiene el UID del usuario autenticado
+  if (!userId) {
+    console.log('⚠️ Usuario no autenticado, no se puede guardar el cocktail');
+    return;
+  }
+
   const ingredientesTexto = cocktail.ingredients
-  .map((ing: { ingredient: string; quantity: string }) => `${ing.ingredient}: ${ing.quantity}`)
-  .join(', ');
+    .map((ing: { ingredient: string; quantity: string }) => `${ing.ingredient}: ${ing.quantity}`)
+    .join(', ');
 
   const bebida: Bebida = {
     id: parseInt(cocktail.idDrink),
@@ -149,9 +156,10 @@ guardarCocktail(cocktail: any) {
     ingredientes: ingredientesTexto,
     foto: cocktail.strDrinkThumb,
     descripcion: cocktail.strInstructions,
+    userId: userId // 🔥 Asigna correctamente el UID del usuario
   };
 
-  this.saveBebida(bebida); 
+  this.saveBebida(bebida); // Guarda la bebida en Firestore
 }
 
  /*creo un array para tener las bebidas guardadas*/

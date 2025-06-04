@@ -18,7 +18,17 @@
     <p><strong>Ingredientes:</strong> {{ bebida.ingredientes }}</p>
     <p><strong>Descripción:</strong> {{ bebida.descripcion }}</p>
   </div>
+
+  <div class="actions">
+  <ion-button fill="clear" color="dark" (click)="editBebida(bebida)">
+    <ion-icon slot="icon-only" name="create"></ion-icon>
+  </ion-button>
+  <ion-button fill="clear" color="dark" (click)="confirmDelete(bebida)">
+    <ion-icon slot="icon-only" name="trash"></ion-icon>
+  </ion-button>
 </div>
+</div>
+
 
 <div class="pagination">
   <ion-button fill="clear" [disabled]="currentPage === 1" (click)="prevPage()">
@@ -56,3 +66,6 @@
 
 
 </ion-content>
+
+
+   

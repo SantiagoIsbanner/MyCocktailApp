@@ -48,11 +48,10 @@ export class FirestoreService {
   }
 
   // Eliminar una bebida por su ID
-  async deleteBebida(nombre: string): Promise<void> {
-    const bebidaRef = doc(this.firestore, `bebidasComunidad/${nombre}`);
-    await deleteDoc(bebidaRef);
-    console.log('🗑️ Bebida eliminada:', nombre);
-  }
+  async deleteBebida(id: number): Promise<void> {
+  const bebidaRef = doc(this.firestore, `bebidasComunidad/${id}`);
+  await deleteDoc(bebidaRef);
+}
 getAllBebidasComunidad(): Observable<Bebida[]> {
     const bebidasRef = collection(this.firestore, 'bebidasComunidad'); // 🔥 Referencia a la colección
     return collectionData(bebidasRef, { idField: 'id' }) as Observable<Bebida[]>;

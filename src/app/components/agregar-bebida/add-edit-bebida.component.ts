@@ -3,6 +3,8 @@ import { ModalController } from '@ionic/angular';
 import { Bebida } from 'src/app/models/bebida.model';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { AlertController } from '@ionic/angular';
+import { AuthService } from 'src/app/services/auth.service';
+import { FirestoreService } from 'src/app/services/firestore.service';
 
 @Component({
   standalone: false,
@@ -20,7 +22,7 @@ export class AddEditBebidaComponent {
 
   CameraSource = CameraSource;
 
-  constructor(private modalCtrl: ModalController, private alertController: AlertController) {}
+  constructor(private authService: AuthService,private firestoreService: FirestoreService,private modalCtrl: ModalController, private alertController: AlertController) {}
 
   ngOnInit() { // Inicializa los campos si se está editando una bebida
     if (this.bebida) { // Verifica si se está editando una bebida
@@ -64,25 +66,31 @@ export class AddEditBebidaComponent {
     this.foto = null;
   }
 
-  async save() {
+async save() {
   if (!this.nombre || this.ingredientes.length === 0 || !this.descripcion || !this.foto) {
-    const alert = await this.alertController.create({
-      header: 'Datos incompletos',
-      message: 'Todos los campos son obligatorios.',
-      buttons: ['OK']
-    });
-
-    await alert.present();
+    alert('Todos los campos son obligatorios');
     return;
   }
 
-    this.modalCtrl.dismiss({
-      nombre: this.nombre,
-      ingredientes: this.ingredientes,
-      descripcion: this.descripcion,
-      foto: this.foto
-    });
+  const userId = this.authService.getUserId(); // 🔥 Obtén el ID del usuario actual
+
+  if (!userId) {
+    alert('⚠️ No se puede guardar porque el usuario no está autenticado.');
+    return;
   }
+
+  const bebida: Bebida = {
+    id: Date.now(), // 🔥 Genera un ID único (puedes mejorar esto según tu lógica)
+    nombre: this.nombre,
+    ingredientes: this.ingredientes.join(', '),
+    descripcion: this.descripcion,
+    foto: this.foto,
+    userId: userId // 🔥 Aquí se guarda correctamente el ID del usuario
+  };
+
+  this.firestoreService.saveBebida(bebida);
+}
+
 
   close() {
     this.modalCtrl.dismiss(null);
