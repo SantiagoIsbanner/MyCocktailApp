@@ -28,7 +28,7 @@ export class FirestoreService {
 //Metodo que sera llamado desde el home para mostrar la bebida en
   async getTodayCocktail(): Promise<any | null> {
   const todayId = this.getTodayId();
-  const docRef = doc(this.firestore, `dailyCocktail/${todayId}`);
+  const docRef = doc(this.firestore, `dailycocktail/${todayId}`);
   const docSnap = await getDoc(docRef);
   return docSnap.exists() ? docSnap.data() : null;
 }
