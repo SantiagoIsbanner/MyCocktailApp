@@ -18,5 +18,3 @@ export const environment = {
     measurementId: "G-2EFFR3N792"
   }
 };
-
-

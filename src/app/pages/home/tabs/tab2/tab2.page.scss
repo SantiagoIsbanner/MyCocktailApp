@@ -1,3 +1,78 @@
+.card {
+  width: 90%;
+  max-width: 600px;
+  margin: 1rem auto;
+  background-color: var(--card-background);
+  overflow: hidden;
+  border-radius: 18px; /* Bordes redondeados */
+  transition: background-color 0.3s, box-shadow 0.3s; /* Añadida transición para la sombra */
+  box-shadow: var(--card-shadow); /* Sombra suave */
+}
+
+/* Imagen dentro de la tarjeta */
+.image {
+  width: 100%;
+  height: auto;
+  //aspect-ratio: 3/2;
+  object-fit: cover;
+  display: block;
+}
+
+/* Barra superior de la tarjeta */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 2px;
+  background-color: var(--card-topbar-bg);
+  border-top-left-radius: 12px; /* Borde superior redondeado */
+  border-top-right-radius: 12px; /* Borde superior redondeado */
+}
+
+/* Contenedor de las acciones */
+.actions {
+  display: flex;
+  gap: 7px;
+}
+
+/* Estilo para los iconos de las acciones */
+.actions ion-icon,
+.user-star ion-icon {
+  font-size: 1.4rem;
+  color: var(--card-icon-color);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.user-star ion-icon.favorito {
+  color: goldenrod;
+}
+/* Efecto al pasar el ratón por los iconos */
+.actions ion-icon:hover {
+  transform: scale(1.2);
+}
+
+/* Contenido de la tarjeta */
+.card-content {
+  padding: 0 12px 12px;
+}
+
+.card-content h2 {
+  font-size: 1.5rem;
+  margin: 0;
+  padding: 10px;
+  font-weight: bold;
+  color: var(--card-title-color);
+}
+
+.card-content p {
+  font-size: 0.95rem;
+  margin: 4px 0;
+  color: var(--card-text-color);
+  padding: 5px;
+}
+
+/* Paginación */
 .pagination {
   display: flex;
   justify-content: center;
@@ -6,67 +81,89 @@
   margin: 1rem 0;
 }
 
-.card{
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto 2rem;
-    background-color: rgb(47, 47, 47);
-    overflow: hidden;
+.ver-preparacion-btn {
+  --background: transparent;
+  --color: #585858; // gris suave
+  --border: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 4px 10px;
+  border-radius: 4px;
+
+  &:hover {
+    --color: #FF6B6B; 
+    background: rgba(204, 204, 204, 0.05);
+  }
 }
 
-.image {
-    width: 100%;
-    aspect-ratio: 1/1;
-    object-fit: cover;
-    display: block;
-}
-
-.top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 10px;
-    background-color: #333;
-}
-
-.actions {
-  display: flex;
-  gap: 7px;
-}
-
-.actions ion-icon {
-  font-size: 1.4rem;
-  color: white;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.user-star ion-icon {
-  font-size: 1.5rem;               
-  cursor: pointer;                 
-  transition: transform 0.2s ease; 
-  color: white;
-}
-
-.actions ion-icon:hover {
-  transform: scale(1.2);            
-}
-
-.card-content {
-  padding: 0 12px 12px;             
-}
-
-.card-content h2 {
-  font-size: 1.5rem;
-  margin: 0;
-  padding: 10px;
+.random-btn{
+  --background: var(--ion-color-primary);
+  --color: #ffffff;
+  --border-radius: 10px;
+  --box-shadow: var(--box-shadow);
   font-weight: bold;
-  color: rgb(48, 115, 208);
+  padding: 8px 16px;
+  font-size: 16px;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  display: flex;
+  justify-content: center;
+
+  &:hover {
+    --background: #e45555; /* un rojo más oscuro para hover */
+    box-shadow: var(--card-shadow);
+  }
 }
 
-.card-content p {
-  font-size: 0.95rem;
-  margin: 4px 0;
-  color: #a2a2a2;
-  padding: 5px;
+.icon-random-btn{
+  color: rgb(30, 30, 30);
+}
+
+.search-container {
+  max-width: 600px;
+  margin: 1rem auto;
+  padding: 0 1rem;
+}
+
+.search-bar {
+  display: flex;
+  background-color: var(--card-background) !important;
+  box-shadow: var(--card-shadow);
+  border-radius: 20px;
+  border: none; /* <-- Si ves un borde raro, esto lo neutraliza */
+  padding: 0.25rem 0.2rem;
+}
+
+.search-select {
+  width: 120px;
+  margin-right: 0.5rem;
+  --background: transparent;
+  --padding-start: 0.5rem;
+  --color: var(--card-text-color);
+  --placeholder-color: var(--card-text-color);
+}
+
+.search-input {
+  flex: 1;
+  --background: transparent;
+  --padding-start: 0.5rem;
+  color: var(--card-text-color);
+  font-weight: 500;
+}
+
+.search-input::part(native) {
+  color: var(--card-text-color);
+}
+
+.search-button {
+  margin-left: 0.5rem;
+  min-width: 44px;
+  height: 38px;
+  font-size: 1.3rem;
+  --background: var(--ion-color-primary);
+  --box-shadow: none;
+  --border-radius: 10px;
+}
+
+.search-button:hover {
+  --background: #e45555; /* un rojo más oscuro para hover */
 }

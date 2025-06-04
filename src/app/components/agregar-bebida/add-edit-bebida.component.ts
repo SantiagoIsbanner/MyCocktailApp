@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Bebida } from 'src/app/models/bebida.model';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   standalone: false,
@@ -12,21 +13,36 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 export class AddEditBebidaComponent {
   @Input() bebida?: Bebida;
   nombre = '';
-  ingredientes = '';
+  nuevoIngrediente = '';
+  ingredientes: string[] = [];
   descripcion = '';
   foto: string | null = null;
 
   CameraSource = CameraSource;
 
-  constructor(private modalCtrl: ModalController) {}
+  constructor(private modalCtrl: ModalController, private alertController: AlertController) {}
 
-  ngOnInit() {
-    if (this.bebida) {
-      this.nombre = this.bebida.nombre;
-      this.ingredientes = this.bebida.ingredientes;
+  ngOnInit() { // Inicializa los campos si se está editando una bebida
+    if (this.bebida) { // Verifica si se está editando una bebida
+      this.nombre = this.bebida.nombre; // Asigna el nombre de la bebida
+      this.ingredientes = Array.isArray(this.bebida.ingredientes) 
+        ? this.bebida.ingredientes
+        : this.bebida.ingredientes.split(',').map(i => i.trim());
       this.descripcion = this.bebida.descripcion;
       this.foto = this.bebida.foto;
     }
+  }
+
+  addIngrediente() { // Agrega un nuevo ingrediente a la lista
+    const ingrediente = this.nuevoIngrediente.trim(); // Elimina espacios al inicio y al final
+    if (ingrediente) { // Verifica que el ingrediente no esté vacío
+      this.ingredientes.push(ingrediente); // Agrega el ingrediente a la lista
+      this.nuevoIngrediente = ''; // Limpia el campo de entrada
+    }
+  }
+
+  removeIngrediente(index: number) { // Elimina un ingrediente de la lista
+    this.ingredientes.splice(index, 1); // Elimina el ingrediente en la posición especificada
   }
 
   async takePhoto(source: CameraSource) {
@@ -48,11 +64,17 @@ export class AddEditBebidaComponent {
     this.foto = null;
   }
 
-  save() {
-    if (!this.nombre || !this.ingredientes || !this.descripcion || !this.foto) {
-      alert('Todos los campos son obligatorios');
-      return;
-    }
+  async save() {
+  if (!this.nombre || this.ingredientes.length === 0 || !this.descripcion || !this.foto) {
+    const alert = await this.alertController.create({
+      header: 'Datos incompletos',
+      message: 'Todos los campos son obligatorios.',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+    return;
+  }
 
     this.modalCtrl.dismiss({
       nombre: this.nombre,

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CocktailService } from 'src/app/services/cocktail.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
+import { FirestoreService } from 'src/app/services/firestore.service';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   standalone: false,
@@ -11,22 +13,66 @@ import { Router } from '@angular/router';
 })
 export class Tab1Page implements OnInit {
   
-  cocktails: any;
-  constructor(private cocktailService: CocktailService, private authService:AuthService, private router:Router) {}
-
-  ngOnInit() {
-    this.cocktailService.getDailyCocktails().then(data => {
-      this.cocktails = data;
-    });
-  }
  
 
+  bebidaDelDia: any = null;
+   instruccionesTraducidas: string = '';
+    mostrarOriginal: boolean = false;
+  constructor(
+    private cocktailService: CocktailService,
+    private firestoreService: FirestoreService,
+    private modalCtrl: ModalController,
+    
+  ) {}
 
+ ngOnInit() {
+  this.cargarDailyCocktail();
+   
+}
+//obtiene una bebida aleatoria de la API, descompone sus atributos en campos para que puedan ser almacenados en la base de datos
+//llamando al servicio de firestore
+obtenerYGuardarDailyCocktail() {
+  this.cocktailService.getRandomCocktail().subscribe({
+    next: (res) => {
+      const bebida = res?.drinks?.[0];
+      if (bebida) {
+        const bebidaSimplificada = {
+          nombre: bebida.strDrink,
+          categoria: bebida.strCategory,
+          instrucciones: bebida.strInstructions,
+          imagen: bebida.strDrinkThumb,
+          ingredientes: this.extraerIngredientes(bebida),
+          creado: new Date()
+        };
+         
+         
 
-  logout(){
-    this.authService.logout()
-    .then(()=>this.router.navigate(['/login']))
-    .catch(error=>alert("Error al cerrar sesion: "+error.message))
+        this.firestoreService.saveDailyCocktail(bebidaSimplificada)
+          .catch(err => console.error('❌ Error al guardar bebida del día:', err));
+      }
+      
+    },
+    error: (err) => console.error('❌ Error al obtener bebida:', err),
+  });
+}
+//Devuelve un listado con los ingredientes que lleva la bebida, evitando traer valores nulos
+  extraerIngredientes(bebida: any): string[] {
+  const ingredientes: string[] = [];
+  for (let i = 1; i <= 15; i++) {
+    const ingrediente = bebida[`strIngredient${i}`];
+    if (ingrediente) {
+      ingredientes.push(ingrediente);
+    }
   }
+  return ingredientes;
+}
+//llama al metodo getTodayCocktail desde el servicio firestore que luego se mostrara por pantalla
+async cargarDailyCocktail() {
+  this.bebidaDelDia = await this.firestoreService.getTodayCocktail();
+}
+
+
+
+ 
 
 }

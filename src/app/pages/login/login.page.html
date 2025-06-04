@@ -1,7 +1,7 @@
 
 <ion-content class ="ion-padding">
   
-    <ion-title class="title_login" style="margin-top:40px;">MyCocktailApp</ion-title>
+    <ion-title class="title_login">MyCocktailApp</ion-title>
 
 <form class="form_login" [formGroup]="loginForm">
   <ion-item class="input_login_email">
@@ -13,10 +13,11 @@
   </div>
 
   <ion-item class="input_login_password">
-    <ion-label  position="floating">Contraseña</ion-label>
+    <ion-label position="floating">Contraseña</ion-label>
     <ion-input 
       [type]="mostrarPassword ? 'text' : 'password'"              
       formControlName="password" 
+      (keyup.enter)="login()" 
       required>
     </ion-input>
     <ion-icon
@@ -30,7 +31,7 @@
     Por favor ingrese una contraseña válida
   </div>
 
-  <ion-button class="btn_login"  (click)="login()" >Iniciar Sesión</ion-button>
+  <ion-button class="btn_login"  (click)="login()">Iniciar Sesión</ion-button>
 
   <!--barra de separacion-->
   <div style="display: flex; align-items: center; margin: 20px 0;">
@@ -51,18 +52,6 @@
   <div class="btn_register">
     ¿No tenés cuenta? <a (click)="abrirModal()">Regístrate</a>
   </div>
-
 </form>
-
-
-
-
-
-
-
-
-
-
-
 
 </ion-content>

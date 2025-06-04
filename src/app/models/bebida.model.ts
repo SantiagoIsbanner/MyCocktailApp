@@ -1,7 +1,9 @@
 export interface Bebida {
-    id: number;
+  id: number;
   nombre: string;
   ingredientes: string;
   descripcion: string;
   foto: string;
+  showDetails?: boolean;
+  isFavorita?: boolean;
 }

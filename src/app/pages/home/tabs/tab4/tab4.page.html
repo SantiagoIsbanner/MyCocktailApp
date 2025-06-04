@@ -1,0 +1,88 @@
+<ion-header [translucent]="true">
+  <ion-toolbar  color="primary">
+    <ion-title>Mi Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    
+  </ion-header>
+
+  <!--este es el perfil de usuario-->
+  <div class="profile-container">
+    <div class="user-info" *ngIf="userData">
+      <div class="avatar-container">
+        <img [src]="foto || 'https://ui-avatars.com/api/?name=' + getUsernameFromEmail() + '&background=random'" alt="Foto de perfil" class="user-avatar">
+      </div>
+      <h2 class="user-name">{{ getUsernameFromEmail() }}</h2> <!--tag del usuario test-->
+
+      <p class="user-email">{{userData?.email}}</p><!--muestro email del usuario-->
+      
+      <div class="settings-icon">
+        <button class="mode-button" (click)="toggleDarkMode()">
+          <ion-icon [name]="isDarkMode ? 'moon' : 'sunny'" slot="icon-only"></ion-icon>
+        </button>
+        <button class="camera-button" (click)="takePhoto(CameraSource.Photos)">
+          <ion-icon name="camera"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+     <div class="favorite-drinks-container">
+      <div class="stats-container">
+        <div class="stat-item">
+          <span class="stat-number">{{cantidadbebidasGuardadas}}</span>
+          <div class="stat-icon">
+            <ion-icon slot="icon-only" name="bookmark"></ion-icon>
+            <span class="stat-label">Guardados</span>
+          </div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">0</span>
+          <div class="stat-icon">
+            <ion-icon slot="icon-only" name="create"></ion-icon>
+            <span class="stat-label">Creados</span>
+          </div>
+        </div>
+      </div>
+
+       <div style="display: flex; align-items: center; margin: 40px 0;">
+        <div style="flex: 1; height: 1px; background-color: #a2a2a2;"></div>
+        <div style="margin: 0 15px; color: #a2a2a2;">~</div>
+        <div style="flex: 1; height: 1px; background-color: #a2a2a2;"></div>
+      </div>
+
+      <!-- Lista de bebidas guardadas -->
+      <div class="saved-drinks" *ngIf="bebidasGuardadas && bebidasGuardadas.length > 0">
+        <h3>Mis Bebidas Guardadas</h3>
+        <ion-list>
+          <ion-item *ngFor="let bebida of bebidasGuardadas">
+            <ion-thumbnail slot="start">
+              <img [src]="bebida.foto" alt="{{bebida.nombre}}">
+            </ion-thumbnail>
+            <ion-label>
+              <h2>{{bebida.nombre}}</h2>
+              <p>{{bebida.ingredientes}}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </div>
+      
+      <div class="no-saved-drinks" *ngIf="!bebidasGuardadas || bebidasGuardadas.length === 0">
+        <p>No tienes bebidas guardadas aún</p>
+      </div>
+    </div>
+
+
+
+    
+    <div class="logout-button-container">
+      <ion-button expand="block" color="light" class="logout-button" (click)="logout()">
+        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+        Cerrar Sesion
+      </ion-button>
+    </div>
+  </div>
+
+</ion-content>

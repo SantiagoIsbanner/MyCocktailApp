@@ -8,5 +8,18 @@ import { Component } from '@angular/core';
   standalone: false, 
 })
 export class AppComponent {
-  constructor() {}
+
+
+  constructor() {
+
+    this.setInitialAppTheme();
+
+  }
+
+  setInitialAppTheme() {
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.body.setAttribute('data-theme', savedTheme);
+
+  }
 }
