@@ -1,8 +1,10 @@
 // firestore.service.ts
 import { Injectable } from '@angular/core';
 import { Firestore, doc, setDoc, getDoc, DocumentReference } from '@angular/fire/firestore';
+import { collection,  getDocs, deleteDoc, query, orderBy } from '@angular/fire/firestore';
 import { collectionData } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+import { Bebida } from '../models/bebida.model';
 @Injectable({
   providedIn: 'root',
 })
@@ -31,4 +33,30 @@ export class FirestoreService {
   const docSnap = await getDoc(docRef);
   return docSnap.exists() ? docSnap.data() : null;
 }
+
+// Guardar una bebida en Firestore
+  async saveBebida(bebida: Bebida): Promise<void> {
+    const bebidaRef = doc(this.firestore, `bebidasComunidad/${bebida.nombre}`); 
+    await setDoc(bebidaRef, bebida);
+    console.log('✅ Bebida guardada en Firestore:', bebida.nombre);
+  }
+
+  // Obtener todas las bebidas desde Firestore
+  getAllBebidas(): Observable<Bebida[]> {
+    const bebidasRef = collection(this.firestore, 'bebidasComunidad');
+    return collectionData(bebidasRef, { idField: 'id' }) as Observable<Bebida[]>;
+  }
+
+  // Eliminar una bebida por su ID
+  async deleteBebida(nombre: string): Promise<void> {
+    const bebidaRef = doc(this.firestore, `bebidasComunidad/${nombre}`);
+    await deleteDoc(bebidaRef);
+    console.log('🗑️ Bebida eliminada:', nombre);
+  }
+getAllBebidasComunidad(): Observable<Bebida[]> {
+    const bebidasRef = collection(this.firestore, 'bebidasComunidad'); // 🔥 Referencia a la colección
+    return collectionData(bebidasRef, { idField: 'id' }) as Observable<Bebida[]>;
+  }
+
+  
 } 

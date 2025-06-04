@@ -1,26 +1,14 @@
-<ion-header [translucent]="true">
-  <ion-toolbar color="primary">
-    <ion-title>Home</ion-title>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Bebida del Día</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  
- <ion-button (click)="obtenerYGuardarDailyCocktail()" > <!-- Botón para obtener bebida del día -->
-  Obtener bebida del día
-</ion-button>
-  <ion-list>
-    <ion-card class="card" *ngIf="bebidaDelDia">
-      <img class="image" [src]="bebidaDelDia.imagen" />
-      <ion-card-header>
-        <ion-card-title class="content">{{ bebidaDelDia.nombre }}</ion-card-title>
-        <ion-card-subtitle class="content-2">{{ bebidaDelDia.categoria }}</ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content class="content-3">
-        <p>{{ bebidaDelDia.instrucciones }}</p>
-      </ion-card-content>
-    </ion-card>
-  </ion-list>
+<ion-content *ngIf="bebidaDelDia">
+  <div class="bebida-container">
+    <h2>{{ bebidaDelDia.nombre }}</h2>
+    <img [src]="bebidaDelDia.imagen" alt="Imagen de la bebida">
 
-
+    <ion-button (click)="abrirModal()">Preparación</ion-button>
+  </div>
 </ion-content>

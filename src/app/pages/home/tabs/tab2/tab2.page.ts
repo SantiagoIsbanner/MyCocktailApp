@@ -20,43 +20,31 @@ cocktails: any[] = []; // Lista de resultados
 isModalOpen: boolean = false;
 selectedCocktail: any = null;
 cocktailIngredients: { ingredient: string, measure: string }[] = [];
+randomCocktail: any = null;
 
   constructor(private bebidasService: BebidasService, private modalCtrl: ModalController, private cocktailService:CocktailService, private favoritosService: FavoritosService, private alertController: AlertController) { }
 
  
+
 searchCocktail() {
-  if (!this.searchQuery.trim()) { // Verifica si el campo de búsqueda está vacío
-    this.alertController.create({ // 🔥 Muestra una alerta si el campo está vacío
-          header: 'Campo vacío', 
-          message: "El campo de busqueda esta vacío.",
-          buttons: ['OK']
-        }).then(alert => {
-          alert.present();
-        });
+  if (!this.searchQuery.trim()) {
+    console.log("El campo de búsqueda está vacío.");
     return;
   }
   
-  this.cocktails = [];
+   this.cocktails = [];
   this.selectedCocktail = null;
 
   if (this.searchType === 'name') {
     console.log("Buscando por nombre:", this.searchQuery);
-    this.cocktailService.searchCocktailByName(this.searchQuery).subscribe(result => {  // 🔥 Realiza la búsqueda, subscribe trae los resultados 
+    this.cocktailService.searchCocktailByName(this.searchQuery).subscribe(result => {
       if (result.drinks) {
         this.cocktails = result.drinks.map((cocktail: any) => ({
           ...cocktail,
-          ingredients: this.extractIngredients(cocktail), // 🔥 Extraer ingredientes
-          showDetails: false,            // 🔥 Agregar campo para mostrar detalles
-          isFavorita: false  
+          ingredients: this.extractIngredients(cocktail) // 🔥 Extraer ingredientes
         }));
       } else {
-        this.alertController.create({
-          header: 'No encontrado',
-          message: "No se encontraron cócteles con ese nombre.",
-          buttons: ['OK']
-        }).then(alert => {
-          alert.present();
-        });
+        console.log("No se encontraron cócteles.");
         this.cocktails = [];
       }
     });
@@ -69,21 +57,13 @@ searchCocktail() {
         if (fullResult.drinks) {
           this.cocktails.push({
             ...fullResult.drinks[0],
-            ingredients: this.extractIngredients(fullResult.drinks[0]),
-            showDetails: false,           
-            isFavorita: false  
+            ingredients: this.extractIngredients(fullResult.drinks[0])
           });
         }
       });
     });
   } else {
-    this.alertController.create({
-      header: 'No encontrado',
-      message: "No se encontraron cócteles con ese ingrediente.",
-      buttons: ['OK']
-    }).then(alert => {
-      alert.present();
-    });
+    console.log("No se encontraron cócteles con ese ingrediente.");
     this.cocktails = [];
   }
 });
@@ -118,13 +98,13 @@ extractIngredients(cocktail: any): { ingredient: string; quantity: string }[] {
 getRandomCocktail() {
   this.cocktailService.getRandomCocktail().subscribe(
     (data) => {
-      this.selectedCocktail = data.drinks[0];
+      this.randomCocktail = data.drinks[0];
       this.cocktailIngredients = [];
 
       // Extraer ingredientes y medidas del objeto de la API
       for (let i = 1; i <= 15; i++) {
-        const ingredient = this.selectedCocktail[`strIngredient${i}`];
-        const measure = this.selectedCocktail[`strMeasure${i}`];
+        const ingredient = this.randomCocktail[`strIngredient${i}`];
+        const measure = this.randomCocktail[`strMeasure${i}`];
 
         if (ingredient) {
           this.cocktailIngredients.push({

@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { ModalController } from '@ionic/angular';
+import { ModalPreparacionComponent } from 'src/app/components/modal-preparacion/modal-preparacion.component';
 
 @Component({
   standalone: false,
@@ -72,7 +73,13 @@ async cargarDailyCocktail() {
 }
 
 
-
+async abrirModal() {
+  const modal = await this.modalCtrl.create({
+    component: ModalPreparacionComponent,
+    componentProps: { bebida: this.bebidaDelDia }
+  });
+  await modal.present();
+}
  
 
 }

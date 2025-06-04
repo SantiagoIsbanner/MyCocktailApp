@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Preparación</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrarModal()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="bebida">
+  <h2>{{ bebida.nombre }}</h2>
+  <p><strong>Categoría:</strong> {{ bebida.categoria }}</p>
+  
+  <h3>Ingredientes:</h3>
+  <ul>
+    <li *ngFor="let ingrediente of bebida.ingredientes">{{ ingrediente }}</li>
+  </ul>
+
+  <h3>Instrucciones:</h3>
+  <p>{{ bebida.instrucciones || 'No hay instrucciones disponibles en español. Aquí están en inglés.' }}</p>
+</ion-content>

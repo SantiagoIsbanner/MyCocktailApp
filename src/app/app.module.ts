@@ -21,9 +21,10 @@ import { getFirestore } from 'firebase/firestore';
 // AngularFire modular
 import { provideFirebaseApp } from '@angular/fire/app';
 import { provideFirestore } from '@angular/fire/firestore';
+import { ModalPreparacionComponent } from './components/modal-preparacion/modal-preparacion.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, ModalPreparacionComponent],
   imports: [BrowserModule, IonicModule.forRoot(),
     AppRoutingModule,
      AngularFireModule.initializeApp(environment.firebaseConfig),
