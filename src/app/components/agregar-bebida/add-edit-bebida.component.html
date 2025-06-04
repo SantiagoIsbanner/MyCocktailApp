@@ -29,12 +29,12 @@
   <ion-textarea [(ngModel)]="descripcion" placeholder="Descripción"></ion-textarea>
 
   <div>
-    <ion-button fill="clear" (click)="takePhoto(CameraSource.Camera)" color="dark">
-      <ion-icon slot="icon-only" name="camera"></ion-icon>
+    <ion-button fill="clear" (click)="takePhoto(CameraSource.Camera)" >
+      <ion-icon class="foto-buttons" slot="icon-only" name="camera"></ion-icon>
     </ion-button>
 
-    <ion-button fill="clear" (click)="takePhoto(CameraSource.Photos)" color="dark">
-      <ion-icon slot="icon-only" name="image"></ion-icon>
+    <ion-button fill="clear" (click)="takePhoto(CameraSource.Photos)" >
+      <ion-icon class="foto-buttons" slot="icon-only" name="image"></ion-icon>
     </ion-button>
   </div>
 

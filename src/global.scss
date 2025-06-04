@@ -50,6 +50,9 @@
   --card-icon-color: #000000;
   --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   --perfil-logout-background: #fff;
+  --card-random-background: #2f2f2f;
+  --card-title-random-color: #FF6B6B ;
+  --card-text-random-color: #d5d5d5;
 }
 
 [data-theme='dark'] {
@@ -64,5 +67,8 @@
   --card-icon-color: #ffffff;
   --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   --perfil-logout-background: #515151;
+  --card-random-background: #ffffff;
+  --card-title-random-color: #FF6B6B ;
+  --card-text-random-color: #262626;
 }
 

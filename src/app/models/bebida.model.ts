@@ -6,4 +6,5 @@ export interface Bebida {
   foto: string;
   showDetails?: boolean;
   isFavorita?: boolean;
+  userId : string;
 }

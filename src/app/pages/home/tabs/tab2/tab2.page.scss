@@ -9,6 +9,17 @@
   box-shadow: var(--card-shadow); /* Sombra suave */
 }
 
+.card-random{
+  width: 90%;
+  max-width: 600px;
+  margin: 1rem auto;
+  background-color: var(--card-random-background);
+  overflow: hidden;
+  border-radius: 18px; /* Bordes redondeados */
+  transition: background-color 0.3s, box-shadow 0.3s; /* Añadida transición para la sombra */
+  box-shadow: var(--card-shadow); /* Sombra suave */
+}
+
 /* Imagen dentro de la tarjeta */
 .image {
   width: 100%;
@@ -57,6 +68,39 @@
   padding: 0 12px 12px;
 }
 
+.random-title{
+  font-size: 1.5rem;
+  margin: 0;
+  padding: 10px;
+  font-weight: bold;
+  color:#f8f8f8;
+  text-align: center;
+}
+
+.card-content-random {
+  padding: 0 12px 12px;
+}
+
+.card-content-random h2 {
+  font-size: 1.5rem;
+  margin: 0;
+  padding: 10px;
+  font-weight: bold;
+  color: var(--card-title-random-color);
+}
+
+.card-content-random p {
+  font-size: 18px;
+  margin: 4px 0;
+  color: var(--card-text-random-color);
+  padding: 5px;
+}
+
+.desplegable{
+  padding: 12px;
+  color: var(--card-text-random-color);
+}
+
 .card-content h2 {
   font-size: 1.5rem;
   margin: 0;
@@ -83,7 +127,22 @@
 
 .ver-preparacion-btn {
   --background: transparent;
-  --color: #585858; // gris suave
+  --color: #8c8c8c; // gris suave
+  --border: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 4px 10px;
+  border-radius: 4px;
+
+  &:hover {
+    --color: #FF6B6B; 
+    background: rgba(204, 204, 204, 0.05);
+  }
+}
+
+.ver-preparacion-random-btn {
+  --background: transparent;
+  --color: #5e5e5e; // gris suave
   --border: none;
   font-weight: 500;
   transition: all 0.3s ease;
@@ -97,10 +156,13 @@
 }
 
 .random-btn{
-  --background: var(--ion-color-primary);
-  --color: #ffffff;
+  --background:#fbfbfb;
+  --color: #292929;
   --border-radius: 10px;
   --box-shadow: var(--box-shadow);
+  --border-color: var(--ion-color-primary);
+  --border-style: solid;
+  --border-width: 2px;
   font-weight: bold;
   padding: 8px 16px;
   font-size: 16px;
@@ -109,7 +171,7 @@
   justify-content: center;
 
   &:hover {
-    --background: #e45555; /* un rojo más oscuro para hover */
+    --background: #dc7474; /* un rojo más oscuro para hover */
     box-shadow: var(--card-shadow);
   }
 }

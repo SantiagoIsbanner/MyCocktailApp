@@ -6,7 +6,7 @@
 
 <ion-content [fullscreen]="true">
   
- <ion-button (click)="obtenerYGuardarDailyCocktail()" > <!-- Botón para obtener bebida del día -->
+ <ion-button class="boton-1" (click)="obtenerYGuardarDailyCocktail()" > <!-- Botón para obtener bebida del día -->
   Obtener bebida del día
 </ion-button>
   <ion-list>
@@ -16,11 +16,20 @@
         <ion-card-title class="content">{{ bebidaDelDia.nombre }}</ion-card-title>
         <ion-card-subtitle class="content-2">{{ bebidaDelDia.categoria }}</ion-card-subtitle>
       </ion-card-header>
-      <ion-card-content class="content-3">
+       <ion-button size="small" fill="clear" class="ver-preparacion-btn" (click)="toggleDetails(bebidaDelDia)">
+        {{ bebidaDelDia.showDetails ? 'Ocultar preparación' : 'Ver preparación' }}
+      </ion-button>
+
+      <div class="bebida-detalles" *ngIf="bebidaDelDia.showDetails">
+        <p><strong>Ingredientes/cantidades:</strong></p>
+        <ul>
+          <li *ngFor="let ing of bebidaDelDia.ingredientes">{{ ing }}</li>
+        </ul>
+        <p><strong>Forma de preparación:</strong></p>
         <p>{{ bebidaDelDia.instrucciones }}</p>
-      </ion-card-content>
+      </div>
+
     </ion-card>
   </ion-list>
-
-
 </ion-content>
+

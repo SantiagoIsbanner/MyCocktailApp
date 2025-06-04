@@ -1,37 +1,19 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-title>Crea tu bebida personalizada</ion-title>
+    <ion-title>Crea tu bebida Personalizada</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content #contenido [fullscreen]="true">
+  <ion-header collapse="condense">
+    
+  </ion-header>
   
 
-  <div class="card" *ngFor="let bebida of bebidas">
-    <img [src]="bebida.foto" class="image">
+ <div *ngFor="let bebida of bebidasComunidad$ | async" class="card">
+  <img [src]="bebida.foto" class="image">
 
-    <div class="top-bar">
-      <div class="user-star">
-        <ion-button fill="clear" color="dark" (click)="alert()">
-          <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
-        </ion-button>
-        <ion-button fill="clear" (click)="toggleFavoritos(bebida)" [style.color]="bebida.isFavorita ? 'gold' : null ">
-          <ion-icon slot="icon-only" name="bookmark"></ion-icon>
-        </ion-button>
-      </div>
-
-      <div class="actions">
-        <ion-button fill="clear" color="dark" (click)="openModal(bebida)">
-          <ion-icon slot="icon-only" name="create"></ion-icon>
-        </ion-button>
-        <ion-button fill="clear" color="dark" (click)="deleteBebida(bebida.id)">
-          <ion-icon slot="icon-only" name="trash"></ion-icon>
-        </ion-button>
-      </div>
-
-    </div>
-
-    <div class="card-content">
+   <div class="card-content">
       <h2>{{ bebida.nombre }}</h2>
 
       <ion-button size="small" fill="clear" class="ver-preparacion-btn" (click)="toggleDetails(bebida)">
@@ -40,35 +22,42 @@
 
       <div *ngIf="bebida.showDetails">
         <p><strong>Ingredientes/cantidades:</strong></p>
-        <ul>
-          <li *ngFor="let ing of bebida.ingredientes">{{ ing }}</li>
-        </ul>
+        <p>{{bebida.ingredientes}}</p>
         <p><strong>Forma de preparación:</strong></p>
         <p>{{ bebida.descripcion }}</p>
       </div>
     </div>
-  </div>
 
-  <div class="pagination">
-    <ion-button fill="clear" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
-      <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
-    </ion-button>
+  <div *ngIf="bebida.userId === userId" class="actions">
+  <ion-button fill="clear" color="dark" (click)="editBebida(bebida)">
+    <ion-icon slot="icon-only" name="create"></ion-icon>
+  </ion-button>
+  <ion-button fill="clear" color="dark" (click)="confirmDelete(bebida)">
+    <ion-icon slot="icon-only" name="trash"></ion-icon>
+  </ion-button>
+</div>
+</div>
 
-    <ion-button *ngFor="let page of [].constructor(totalPages); let i = index"
-                [fill]="currentPage === i + 1 ? 'solid' : 'outline'"
-                (click)="goToPage(i + 1)">
-      {{ i + 1 }}
-    </ion-button>
 
-    <ion-button fill="clear" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
-      <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
-    </ion-button>
-  </div>
+<div class="pagination">
+  <ion-button fill="clear" [disabled]="currentPage === 1" (click)="prevPage()">
+    <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+  </ion-button>
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="openModal()">
-      <ion-icon name="wine-outline"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+  <ion-button fill="clear" *ngFor="let page of [].constructor(totalPages); let i = index"
+    fill="{{ currentPage === i + 1 ? 'solid' : 'outline' }}" (click)="goToPage(i + 1)">
+    {{ i + 1 }}
+  </ion-button>
+
+  <ion-button fill="clear" [disabled]="currentPage === totalPages" (click)="nextPage()">
+    <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+  </ion-button>
+</div>
+
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button (click)="openModal()">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
 
 </ion-content>

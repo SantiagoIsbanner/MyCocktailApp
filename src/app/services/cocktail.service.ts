@@ -6,7 +6,7 @@ export class CocktailService {
  private BASE_URL='https://thecocktaildb.com/api/json/v1/1';
 
   constructor(private http:HttpClient ) { }
-  getRandomCocktail(){
+  getRandomCocktail() {
     return this.http.get<any>(`${this.BASE_URL}/random.php`)
   }
   searchCocktailByName(name: string)
@@ -16,6 +16,5 @@ export class CocktailService {
   filterCocktailByIngredient(ingredient: string){
     return this.http.get<any>(`${this.BASE_URL}/filter.php?i=${ingredient}`);
   }
-
 } 
 
