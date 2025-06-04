@@ -131,83 +131,8 @@ setOpen(state: boolean, cocktail?: any) {
   }
 }
 
-alert(){
-  console.log("Alert")
-}
 
-ngOnInit() {
-  this.cargarBebidasGuardadas(); // Cargar bebidas guardadas al iniciar el componente
-}
 
-guardarCocktail(cocktail: any) {
-  const userId = this.authService.getUserId(); // 🔥 Obtiene el UID del usuario autenticado
-  if (!userId) {
-    console.log('⚠️ Usuario no autenticado, no se puede guardar el cocktail');
-    return;
-  }
 
-  const ingredientesTexto = cocktail.ingredients
-    .map((ing: { ingredient: string; quantity: string }) => `${ing.ingredient}: ${ing.quantity}`)
-    .join(', ');
-
-  const bebida: Bebida = {
-    id: parseInt(cocktail.idDrink),
-    nombre: cocktail.strDrink,
-    ingredientes: ingredientesTexto,
-    foto: cocktail.strDrinkThumb,
-    descripcion: cocktail.strInstructions,
-    userId: userId // 🔥 Asigna correctamente el UID del usuario
-  };
-
-  this.saveBebida(bebida); // Guarda la bebida en Firestore
-}
-
- /*creo un array para tener las bebidas guardadas*/
-    bebidasGuardadas: Bebida[] = [];
-    cantidadbebidasGuardadas: number = 0; /*acumulo las bebidas guardadas*/
-
-    cargarBebidasGuardadas() {
-      const bebidasGuardadasString = localStorage.getItem('bebidasGuardadas');
-      if (bebidasGuardadasString) {
-        this.bebidasGuardadas = JSON.parse(bebidasGuardadasString);
-        // Obtener todas las bebidas existentes
-        const todasLasBebidas = this.bebidasService.getAllBebidas();
-        
-        // Filtrar solo las bebidas que aún existen
-        this.bebidasGuardadas = this.bebidasGuardadas.filter(bebidaGuardada => 
-          todasLasBebidas.some(bebida => bebida.id === bebidaGuardada.id)
-        );
-        
-        this.cantidadbebidasGuardadas = this.bebidasGuardadas.length;
-        // Actualizar localStorage
-        localStorage.setItem('bebidasGuardadas', JSON.stringify(this.bebidasGuardadas));
-        localStorage.setItem('cantidadbebidasGuardadas', this.cantidadbebidasGuardadas.toString());
-      } else {
-        this.bebidasGuardadas = [];
-        this.cantidadbebidasGuardadas = 0;
-        localStorage.setItem('bebidasGuardadas', JSON.stringify(this.bebidasGuardadas));
-        localStorage.setItem('cantidadbebidasGuardadas', '0');
-      }
-    }
-
-    saveBebida(bebida: Bebida) {
-      // Verificar si ya existe la bebida
-      const bebidaExistente = this.bebidasGuardadas.find(b => b.id === bebida.id);
-      if (!bebidaExistente) {
-        this.bebidasGuardadas.push(bebida);
-        this.cantidadbebidasGuardadas = this.bebidasGuardadas.length;
-        
-        // Actualizar localStorage
-        localStorage.setItem('bebidasGuardadas', JSON.stringify(this.bebidasGuardadas));
-        localStorage.setItem('cantidadbebidasGuardadas', this.cantidadbebidasGuardadas.toString());
-      }
-    }
-
-    eliminarBebidaGuardada(id: number) {
-      this.bebidasGuardadas = this.bebidasGuardadas.filter(b => b.id !== id);
-      this.cantidadbebidasGuardadas = this.bebidasGuardadas.length;
-      localStorage.setItem('bebidasGuardadas', JSON.stringify(this.bebidasGuardadas));
-      localStorage.setItem('cantidadbebidasGuardadas', this.cantidadbebidasGuardadas.toString());
-    }
 
 }

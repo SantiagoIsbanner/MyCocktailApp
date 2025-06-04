@@ -25,16 +25,7 @@
 <div class="card" *ngFor="let cocktail of cocktails">
     <img [src]="cocktail.strDrinkThumb" alt="{{ cocktail.strDrink }}" class="image">
 
-    <div class="top-bar">
-      <div class="user-star">
-        <ion-button fill="clear" color="dark" (click)="alert()">
-          <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
-        </ion-button>
-        <ion-button fill="clear" (click)="guardarCocktail(cocktail)" [style.color]="cocktail.isFavorita ? 'gold' : null ">
-          <ion-icon slot="icon-only" [class.favorito]="cocktail.isFavorita" name="bookmark"></ion-icon>
-        </ion-button>
-      </div>
-    </div>
+   
 
     <div class="card-content">
       <h2>{{ cocktail.strDrink }}</h2>
@@ -49,53 +40,10 @@
           <li *ngFor="let ing of cocktail.ingredients">{{ ing.ingredient }} - {{ ing.quantity }}</li>
         </ul>
         <p><strong>Forma de preparación:</strong></p>
-        <p>{{ cocktail.strInstructions }}</p>
+        <p>{{ cocktail.strInstructionsEs }}</p>
       </div>
     </div>
   </div>
-
-      
-<!--      Mostrar resultados 
-<ion-list>
-  <ion-item *ngFor="let cocktail of cocktails">
-    <ion-card>
-      <img [src]="cocktail.strDrinkThumb" alt="{{ cocktail.strDrink }}" />
-      <ion-card-header>
-        <ion-item (click)="setOpen(true, cocktail)">
-          <ion-label>{{ selectedCocktail.strDrink }}</ion-label>
-        </ion-item>
-
-        Modal para mostrar ingredientes y preparación 
-         <ion-button (click)="setOpen(true, cocktail)">Preparación</ion-button>
-      <ion-modal [isOpen]="isModalOpen">
-  <ng-template>
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>{{ selectedCocktail?.strDrink }}</ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="setOpen(false)">Cerrar</ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content class="ion-padding">
-      <h3>Ingredientes:</h3>
-      <ul>
-        <li *ngFor="let item of selectedCocktail?.ingredients">
-          {{ item.ingredient }} - {{ item.quantity }}
-        </li>
-      </ul>
-
-      <h3>Preparación:</h3>
-      <p *ngIf="selectedCocktail?.strInstructionsES">{{ selectedCocktail.strInstructionsES }}</p>
-      <p *ngIf="!selectedCocktail?.strInstructionsES">{{ selectedCocktail.strInstructions }}</p>
-    </ion-content>
-  </ng-template>
-</ion-modal>
-      </ion-card-header>
-    </ion-card>
-  </ion-item>
-</ion-list> -->
- 
 
 <ion-button (click)="getRandomCocktail()" class="random-btn">
   Obtener Bebida Aleatoria
@@ -103,17 +51,6 @@
 
 <div class="card" *ngIf="randomCocktail">
     <img [src]="randomCocktail.strDrinkThumb" alt="{{ randomCocktail.strDrink }}" class="image">
-
-    <div class="top-bar">
-      <div class="user-star">
-        <ion-button fill="clear" color="dark" (click)="alert()">
-          <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
-        </ion-button>
-        <ion-button fill="clear" (click)="guardarCocktail(randomCocktail)" [style.color]="randomCocktail.isFavorita ? 'gold' : null ">
-          <ion-icon slot="icon-only" [class.favorito]="randomCocktail.isFavorita" name="bookmark"></ion-icon>
-        </ion-button>
-      </div>
-    </div>
 
     <div class="card-content">
       <h2>{{ randomCocktail.strDrink }}</h2>
@@ -136,53 +73,5 @@
       </div>
     </div>
   </div>
-<!-- 
- <ion-card *ngIf="selectedCocktail">
-    <img [src]="selectedCocktail.strDrinkThumb" alt="{{selectedCocktail.strDrink}}" style="width: 100%; max-width: 300px;">
-  </ion-card>
 
-  Desplegable con IonAccordion 
-  <ion-accordion-group *ngIf="selectedCocktail">
-    <ion-accordion value="bebida">
-      <ion-item slot="header">
-        <ion-label>{{ selectedCocktail.strDrink }}</ion-label>
-      </ion-item>
-
-      <div slot="content">
-        <p><strong>Tipo:</strong> {{ selectedCocktail.strCategory }}</p>
-        <p><strong>Alcohol:</strong> {{ selectedCocktail.strAlcoholic }}</p>
-        <ion-button (click)="setOpen(true)">Preparacion</ion-button>
-      </div>
-    </ion-accordion>
-  </ion-accordion-group>
-
-   Modal Inline para mostrar las instrucciones 
-  <ion-modal [isOpen]="isModalOpen">
-  <ng-template>
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>Instrucciones de {{ selectedCocktail?.strDrink }}</ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="setOpen(false)">Cerrar</ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content class="ion-padding">
-      <div *ngIf="selectedCocktail">
-        <h3>Ingredientes:</h3>
-        <ul>
-          <li *ngFor="let item of cocktailIngredients">
-            {{ item.ingredient }} - {{ item.measure }}
-          </li>
-        </ul>
-
-        <h3>Preparación:</h3>
-        <p *ngIf="selectedCocktail.strInstructionsES">{{ selectedCocktail.strInstructionsES }}</p>
-        <p *ngIf="!selectedCocktail?.strInstructionsES">{{ selectedCocktail.strInstructions }}</p>
-      </div>
-    </ion-content>
-  </ng-template>
-</ion-modal> -->
-
-  
   </ion-content>
