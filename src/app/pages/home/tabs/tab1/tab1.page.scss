@@ -16,7 +16,7 @@
   color: var(--card-text-color);
 }
 
-.boton-1 {
+  ion-button.boton-1 {
     display: flex;
     align-items: center;
     --background: var(--ion-color-primary);
@@ -25,14 +25,14 @@
     font-weight: 500;
     transition: all 0.3s ease;
     padding: 4px 10px;
-    border-radius: 20px;
+    --border-radius: 20px;
     margin-top: 20px;
     box-shadow: var(--card-shadow);
     
     &:hover {
-        --background: darken(var(--ion-color-primary), 10%);
         background: rgba(255, 107, 107, 0.8);
         color: #fff;
+        border-radius: 20px;
     }
 }
 
@@ -60,23 +60,6 @@
 .actions {
   display: flex;
   gap: 7px;
-}
-
-/* Estilo para los iconos de las acciones */
-.actions ion-icon,
-.user-star ion-icon {
-  font-size: 1.4rem;
-  color: var(--card-icon-color);
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.user-star ion-icon.favorito {
-  color: goldenrod;
-}
-/* Efecto al pasar el ratón por los iconos */
-.actions ion-icon:hover {
-  transform: scale(1.2);
 }
 
 /* Contenido de la tarjeta */

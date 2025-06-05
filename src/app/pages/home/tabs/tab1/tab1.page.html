@@ -9,6 +9,7 @@
  <ion-button class="boton-1" (click)="obtenerYGuardarDailyCocktail()" > <!-- Botón para obtener bebida del día -->
   Obtener bebida del día
 </ion-button>
+
   <ion-list>
     <ion-card class="card" *ngIf="bebidaDelDia">
       <img class="image" [src]="bebidaDelDia.imagen" />
@@ -26,7 +27,7 @@
           <li *ngFor="let ing of bebidaDelDia.ingredientes">{{ ing }}</li>
         </ul>
         <p><strong>Forma de preparación:</strong></p>
-        <p>{{ bebidaDelDia.instrucciones }}</p>
+        <p>{{ instruccionesTraducidas || bebidaDelDia.instrucciones }}</p>
       </div>
 
     </ion-card>

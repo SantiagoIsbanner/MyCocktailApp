@@ -22,23 +22,23 @@ export class Tab3Page implements OnInit {
 
   @ViewChild('contenido', { static: false }) content!: IonContent;
 
-  ingredientName: string = '';
-  cocktailName: string = '';
-  isModalOpen = false;
-  selectedCocktail: any = null;
-  cocktails: any[] = [];
+  ingredientName: string = ''; // Nombre del ingrediente a buscar
+  cocktailName: string = ''; // Nombre del cóctel a buscar
+  isModalOpen = false; // Indica si el modal está abierto
+  selectedCocktail: any = null; // Cóctel seleccionado para mostrar detalles
+  cocktails: any[] = []; // Lista de cócteles obtenidos
 
   bebidas$: Observable<Bebida[]>; // Observable para bebidas estándar
-  bebidas: Bebida[] = [];
+  bebidas: Bebida[] = []; // Lista de bebidas estándar
 
   bebidasComunidad$: Observable<Bebida[]>; // Observable para bebidas comunidad
-  bebidasComunidad: Bebida[] = [];
+  bebidasComunidad: Bebida[] = []; // Lista de bebidas de la comunidad
 
-  userId: string | null = null;
+  userId: string | null = null; // ID del usuario autenticado
 
-  currentPage = 1;
-  perPage = 4;
-  totalPages = 1;
+  currentPage = 1; // Página actual para la paginación
+  perPage = 4; // Cantidad de elementos por página
+  totalPages = 1; // Total de páginas para la paginación
 
   constructor(
     private alertController: AlertController,
@@ -67,22 +67,24 @@ export class Tab3Page implements OnInit {
     });
   }
 
-  async openModal(bebida?: Bebida) {
-    const modal = await this.modalCtrl.create({
-      component: AddEditBebidaComponent,
-      componentProps: { bebida },
+  async openModal(bebida?: Bebida) { // Método para abrir el modal de agregar/editar bebida
+    const modal = await this.modalCtrl.create({ // Crea una instancia del modal
+      component: AddEditBebidaComponent, // Componente que se mostrará en el modal
+      componentProps: { bebida }, // Pasa la bebida a editar si existe
     });
 
-    await modal.present();
+    await modal.present(); // Presenta el modal
+    // Espera a que el modal se cierre y obtiene los datos devueltos
 
-    const { data } = await modal.onDidDismiss();
+    const { data } = await modal.onDidDismiss(); // Espera a que el modal se cierre y obtiene los datos devueltos
+    // Si hay datos, guarda la bebida (ya sea nueva o editada)
 
-    if (data) {
+    if (data) { // Si hay datos, guarda la bebida (ya sea nueva o editada)
       try {
-        await this.firestoreService.saveBebida(data);
+        await this.firestoreService.saveBebida(data); // Guarda la bebida en Firestore
         this.ngOnInit(); // Recargar bebidas luego de guardar
-      } catch (error) {
-        console.error('Error guardando bebida:', error);
+      } catch (error) { 
+        console.error('Error guardando bebida:', error); // Manejo de errores al guardar bebida
         this.showErrorAlert('Ocurrió un error al guardar la bebida.');
       }
     }
@@ -90,16 +92,17 @@ export class Tab3Page implements OnInit {
 
   editBebida(bebida: Bebida) {
     
-    if (bebida.userId === this.userId) {
-      this.openModal(bebida);
+    if (bebida.userId === this.userId) { // Verifica si el usuario es el creador de la bebida
+      this.openModal(bebida); // Abre el modal para editar la bebida
     } else {
       this.showErrorAlert('No puedes editar esta bebida porque no eres su creador.');
     }
   }
 
-  async confirmDelete(bebida: Bebida) {
+  async confirmDelete(bebida: Bebida) { // Método para confirmar la eliminación de una bebida
+    // Verifica si el usuario es el creador de la bebida antes de permitir la eliminación
     
-    if (bebida.userId === this.userId) {
+    if (bebida.userId === this.userId) { // Verifica si el usuario es el creador de la bebida
       const alert = await this.alertController.create({
         header: 'Confirmación',
         message: `¿Seguro que deseas eliminar la bebida ${bebida.nombre}?`,
@@ -115,7 +118,7 @@ export class Tab3Page implements OnInit {
     }
   }
 
-  async deleteBebida(id: number) {
+  async deleteBebida(id: number) { // Método para eliminar una bebida 
     try {
       await this.firestoreService.deleteBebida(id);
       console.log(`🗑️ Bebida ${id} eliminada`);
@@ -126,18 +129,18 @@ export class Tab3Page implements OnInit {
     }
   }
 
-  loadBebidasPaginadas() {
-    const start = (this.currentPage - 1) * this.perPage;
-    const paginadas = this.bebidasComunidad.slice(start, start + this.perPage);
+  loadBebidasPaginadas() { // Método para cargar las bebidas de la comunidad paginadas
+    const start = (this.currentPage - 1) * this.perPage; // Calcular el índice de inicio para la paginación
+    const paginadas = this.bebidasComunidad.slice(start, start + this.perPage); 
 
     // Crear nuevo observable para la página actual
-    this.bebidasComunidad$ = new Observable((observer) => {
-      observer.next(paginadas);
+    this.bebidasComunidad$ = new Observable((observer) => { // Crear un nuevo observable para la página actual
+      observer.next(paginadas); // Emitir las bebidas paginadas
       observer.complete();
     });
   }
-
-  goToPage(page: number) {
+ 
+  goToPage(page: number) { // Método para ir a una página específica  
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
       this.loadBebidasPaginadas();
@@ -147,7 +150,7 @@ export class Tab3Page implements OnInit {
     }
   }
 
-  nextPage() {
+  nextPage() { // Método para ir a la siguiente página
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
       this.loadBebidasPaginadas();
@@ -157,7 +160,7 @@ export class Tab3Page implements OnInit {
     }
   }
 
-  prevPage() {
+  prevPage() { // Método para ir a la página anterior
     if (this.currentPage > 1) {
       this.currentPage--;
       this.loadBebidasPaginadas();
@@ -167,17 +170,18 @@ export class Tab3Page implements OnInit {
     }
   }
 
-  toggleDetails(bebida: any) {
+  toggleDetails(bebida: any) { // Método para alternar la visibilidad de los detalles de una bebida
+  // Cambia el estado de showDetails al valor opuesto
     bebida.showDetails = !bebida.showDetails;
   }
 
-  mostrarPassword = false;
+  mostrarPassword = false; 
 
-  toggleMostrarContrasena() {
+  toggleMostrarContrasena() { // Método para alternar la visibilidad de la contraseña 
     this.mostrarPassword = !this.mostrarPassword;
   }
 
-  async showErrorAlert(mensaje: string) {
+  async showErrorAlert(mensaje: string) { 
     const alert = await this.alertController.create({
       header: 'Error',
       message: mensaje,

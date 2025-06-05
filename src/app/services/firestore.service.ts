@@ -12,7 +12,7 @@ export class FirestoreService {
 //Guarda la bebida en firestore
   async saveDailyCocktail(data: any): Promise<void> {
     const todayId = this.getTodayId(); // e.g., '2025-05-18'
-    const docRef: DocumentReference = doc(this.firestore, `dailyCocktail/${todayId}`);
+    const docRef: DocumentReference = doc(this.firestore, `dailycocktail/${todayId}`);
 
     const docSnap = await getDoc(docRef);
     if (!docSnap.exists()) {
@@ -28,7 +28,7 @@ export class FirestoreService {
 //Metodo que sera llamado desde el home para mostrar la bebida en
   async getTodayCocktail(): Promise<any | null> {
   const todayId = this.getTodayId();
-  const docRef = doc(this.firestore, `dailyCocktail/${todayId}`);
+  const docRef = doc(this.firestore, `dailycocktail/${todayId}`);
   const docSnap = await getDoc(docRef);
   return docSnap.exists() ? docSnap.data() : null;
 }

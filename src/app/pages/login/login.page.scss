@@ -131,5 +131,21 @@
   color: var(--ion-text-color);
 }
 
+.title_login {
+  display: flex;
+  flex-direction: column; /* Cambia de fila (row) a columna */
+  align-items: center;    /* Centra horizontalmente */
+  justify-content: center;
+  margin-top: 50px;
+  margin-bottom: 50px;    /* Espacio debajo si hace falta */
+  filter: drop-shadow(0 0 6px #ff7373) drop-shadow(0 0 10px #ff7373);
+}
 
+.logo_login { 
+  height: 150px;
+  width: 150px;
+  margin-right: 10px;
+  vertical-align: middle;
+  border-radius: 52%;
+}
 

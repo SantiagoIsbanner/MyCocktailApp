@@ -3,6 +3,7 @@ import { CocktailService } from 'src/app/services/cocktail.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { ModalController } from '@ionic/angular';
 import { ModalPreparacionComponent } from 'src/app/components/modal-preparacion/modal-preparacion.component';
+import { GoogleTranslateService } from 'src/app/services/google-translate.service'; // Asegúrate de que la ruta sea correcta
 
 @Component({
   standalone:false,
@@ -19,7 +20,8 @@ export class Tab1Page implements OnInit {
   constructor(
     private cocktailService: CocktailService,
     private firestoreService: FirestoreService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private googleTranslateService: GoogleTranslateService // Asegúrate de importar TranslateService correctamente
   ) {}
 
   ngOnInit() {
@@ -61,9 +63,23 @@ export class Tab1Page implements OnInit {
 
   // Carga la bebida del día desde Firestore
   async cargarDailyCocktail() {
-    this.bebidaDelDia = await this.firestoreService.getTodayCocktail();
+  this.bebidaDelDia = await this.firestoreService.getTodayCocktail();
+  if (this.bebidaDelDia?.instrucciones) {
+    this.googleTranslateService.translateText(this.bebidaDelDia.instrucciones, 'es').subscribe({
+      next: (res: any) => {
+        if (res?.data?.translations?.length > 0) {
+          this.instruccionesTraducidas = res.data.translations[0].translatedText;
+        } else {
+          this.instruccionesTraducidas = this.bebidaDelDia.instrucciones; // fallback
+        }
+      },
+      error: (err) => {
+        console.error('Error traduciendo instrucciones:', err);
+        this.instruccionesTraducidas = this.bebidaDelDia.instrucciones; // fallback
+      }
+    });
   }
-
+}
   // Abre el modal con la preparación de la bebida del día
   async abrirModal() {
     const modal = await this.modalCtrl.create({

@@ -13,27 +13,27 @@ import { Preferences } from '@capacitor/preferences'; /*importo preferences para
 export class Tab4Page implements OnInit {
 
    userData: any = {}; /*variable para almacenar la data del user actual*/
-  isDarkMode = false;
-  CameraSource = CameraSource;
-  foto: string | null = null;
-  bebidasGuardadas: any[] = [];
-  cantidadbebidasGuardadas: number = 0;
+  isDarkMode = false; // variable para el modo oscuro
+  CameraSource = CameraSource; // variable para definir la fuente de la cámara
+  foto: string | null = null; // variable para almacenar la foto del usuario
+  bebidasGuardadas: any[] = []; // variable para almacenar las bebidas guardadas
+  cantidadbebidasGuardadas: number = 0; // variable para contar la cantidad de bebidas guardadas
 
   constructor(
     private router: Router,
     private authService: AuthService
   ) {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    this.isDarkMode = savedTheme === 'dark';
+    const savedTheme = localStorage.getItem('theme') || 'light'; // Obtiene el tema guardado o usa 'light' por defecto
+    this.isDarkMode = savedTheme === 'dark';  // Inicializa el modo oscuro según el tema guardado
   }
 
-  async ionViewWillEnter() {
-    await this.cargarBebidasGuardadas();
+  async ionViewWillEnter() { // Método que se ejecuta cuando la vista está a punto de entrar
+    await this.cargarBebidasGuardadas(); // Carga las bebidas guardadas desde localStorage
   }
   //cargar bebidas guardadas
-  async cargarBebidasGuardadas() {
-    const bebidasGuardadasString = localStorage.getItem('bebidasGuardadas');
-    if (bebidasGuardadasString) {
+  async cargarBebidasGuardadas() { // Método para cargar las bebidas guardadas desde localStorage
+    const bebidasGuardadasString = localStorage.getItem('bebidasGuardadas'); // Obtiene las bebidas guardadas como string desde localStorage
+    if (bebidasGuardadasString) { 
       this.bebidasGuardadas = JSON.parse(bebidasGuardadasString);//si hay bebidas las guardo
       this.cantidadbebidasGuardadas = this.bebidasGuardadas.length;//cuento la cantidad
     } else {
@@ -65,21 +65,21 @@ export class Tab4Page implements OnInit {
   }
 
   logout() {/*cierre de sesion*/
-    this.authService.logout()
-    .then(()=>this.router.navigate(['/login']))
+    this.authService.logout() // Cierra la sesión del usuario
+    .then(()=>this.router.navigate(['/login'])) // Redirige al usuario a la página de login
     .catch(error=>alert("Error al cerrar sesion: "+error.message))
     }
     
-  toggleDarkMode() {
+  toggleDarkMode() { // Método para alternar entre modo oscuro y claro
     this.isDarkMode = !this.isDarkMode;
-    const theme = this.isDarkMode ? 'dark' : 'light';
-    document.body.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
+    const theme = this.isDarkMode ? 'dark' : 'light'; // Define el tema según el estado del modo oscuro
+    document.body.setAttribute('data-theme', theme); // Aplica el tema al body del documento
+    localStorage.setItem('theme', theme); // Guarda el tema en localStorage
   }
 
   async takePhoto(source: CameraSource) {
   try {
-    const image = await Camera.getPhoto({
+    const image = await Camera.getPhoto({ // Obtiene una foto de la cámara o galería
       quality: 90,
       allowEditing: false,
       resultType: CameraResultType.Base64,
@@ -88,8 +88,8 @@ export class Tab4Page implements OnInit {
 
     this.foto = 'data:image/jpeg;base64,' + image.base64String;
 
-    await Preferences.set({
-      key: 'user-photo',
+    await Preferences.set({ 
+      key: 'user-photo', // Guarda la foto en Preferences
       value: this.foto
     });
   } catch (error) {

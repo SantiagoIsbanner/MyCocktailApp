@@ -22,6 +22,14 @@ import { getFirestore } from 'firebase/firestore';
 import { provideFirebaseApp } from '@angular/fire/app';
 import { provideFirestore } from '@angular/fire/firestore';
 
+import { HttpClient } from '@angular/common/http';
+
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
+
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, IonicModule.forRoot(),
@@ -32,13 +40,15 @@ import { provideFirestore } from '@angular/fire/firestore';
     LoginPageModule,
     AngularFirestoreModule,
     FormsModule,
-    ReactiveFormsModule,],
+    ReactiveFormsModule,
+  ],
   
     providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy, },
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideFirestore(() => getFirestore()),
-    provideAuth(() => getAuth()) // 🔥 Agregar Auth aquí
+    provideAuth(() => getAuth()),// 🔥 Agregar Auth aquí
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
+

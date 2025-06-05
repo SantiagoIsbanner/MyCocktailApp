@@ -20,52 +20,52 @@ export class LoginPage {
     private toastController: ToastController,
     private modalCtrl: ModalController
   ) {
-    this.loginForm = new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required, Validators.minLength(6)])
+    this.loginForm = new FormGroup({ // Inicializa el formulario reactivo
+      email: new FormControl('', [Validators.required, Validators.email]), // Valida que el email sea requerido y tenga un formato correcto
+      password: new FormControl('', [Validators.required, Validators.minLength(6)]) // Valida que la contraseña sea requerida y tenga al menos 6 caracteres
     });
   }
 
-  async abrirModal() {
-    const modal = await this.modalCtrl.create({
-      component: ModalComponent
+  async abrirModal() { // Método para abrir el modal
+    const modal = await this.modalCtrl.create({ // Crea una instancia del modal
+      component: ModalComponent // Especifica el componente que se mostrará en el modal
     });
-    return await modal.present();
+    return await modal.present(); // Presenta el modal
   }
 
   login() {
-    const { email, password } = this.loginForm.value;
+    const { email, password } = this.loginForm.value; // Obtiene los valores del formulario
     
-    this.authService.login(email, password)
-      .then(() => {
+    this.authService.login(email, password) // Llama al servicio de autenticación para iniciar sesión
+      .then(() => { // Si la promesa se resuelve, muestra el toast de bienvenida y navega a la página de inicio
         this.toastWelcome('top');//muestra el toast de bienvenida
-        this.router.navigate(['/home']);
+        this.router.navigate(['/home']); //navega a la página de inicio
       })
       .catch(error => this.toastError('top'));//muestra el toast de error
   }
 
-  register() {
-    const { email, password } = this.loginForm.value;
+  register() { // Método para registrar un nuevo usuario
+    const { email, password } = this.loginForm.value; // Obtiene los valores del formulario
     
-    this.authService.register(email, password)
-      .then(() => {this.toastWelcome('top');
+    this.authService.register(email, password) // Llama al servicio de autenticación para registrar un nuevo usuario
+      .then(() => {this.toastWelcome('top'); // Si la promesa se resuelve, muestra el toast de bienvenida
       })  
   
-      .catch(error => this.toastError('top'));
+      .catch(error => this.toastError('top'));  // Si ocurre un error, muestra el toast de error
   }
 
-  loginGoogle() {
-    this.authService.loginWithGoogle()
+  loginGoogle() { // Método para iniciar sesión con Google
+    this.authService.loginWithGoogle() // Llama al servicio de autenticación para iniciar sesión con Google
       .then(() => {
-        this.toastWelcome('top');
-        this.router.navigate(['/home']);
+        this.toastWelcome('top'); // Muestra el toast de bienvenida
+        this.router.navigate(['/home']); // Navega a la página de inicio
       })
-      .catch(error => this.toastError('top'));
+      .catch(error => this.toastError('top')); // Si ocurre un error, muestra el toast de error
     }
 
 toastError(position: 'top' | 'middle' | 'bottom') {//Toast para mensaje de error
   this.toastController.create({
-    message: 'Usuario o contraseña invalidos',
+    message: 'Usuario o contraseña invalidos', // Mensaje de error genérico
     duration: 2500,
     position: position
     }).then((toast: any) => toast.present());
@@ -81,9 +81,14 @@ toastError(position: 'top' | 'middle' | 'bottom') {//Toast para mensaje de error
 
   mostrarPassword = false;
 
-  toggleMostrarContrasena() {
+  toggleMostrarContrasena() {  // Método para alternar la visibilidad de la contraseña
+  // Cambia el estado de mostrarPassword al valor opuesto
     this.mostrarPassword = !this.mostrarPassword;
 }
+
+get logoSrc(): string { // Método para obtener la ruta de la imagen del logo según el tema actual
+  // Obtiene el tema actual del body del documento
+  const theme = document.body.getAttribute('data-theme') || 'light';
+  return theme === 'dark' ? 'assets/logo-dark.png' : 'assets/logo-light.png'; // Retorna la ruta de la imagen del logo según el tema actual
 }
-
-
+}
