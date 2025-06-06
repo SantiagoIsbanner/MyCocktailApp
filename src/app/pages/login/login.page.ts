@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/services/auth.service';
-import { FormControl, FormGroup, FormsModule, Validators } from '@angular/forms';
-import { ToastController, ModalController } from '@ionic/angular';
-import { ModalComponent } from '../../components/modal/modal.component';
+import { AuthService } from 'src/app/services/auth.service'; // Servicio de autenticación
+import { FormControl, FormGroup, Validators } from '@angular/forms'; // Manejo de formularios reactivos
+import { ToastController, ModalController } from '@ionic/angular'; // Controladores para toasts y modales
+import { ModalComponent } from '../../components/modal/modal.component'; // Componente del modal
 
 @Component({
   selector: 'app-login',
@@ -12,83 +12,107 @@ import { ModalComponent } from '../../components/modal/modal.component';
   standalone: false
 })
 export class LoginPage {
-  loginForm: FormGroup;
+  loginForm: FormGroup; // Define el formulario reactivo para el login
 
   constructor(
-    private authService: AuthService, 
-    private router: Router,
-    private toastController: ToastController,
-    private modalCtrl: ModalController
+    private authService: AuthService, // Servicio de autenticación
+    private router: Router, // Servicio de navegación
+    private toastController: ToastController, // Controlador para notificaciones tipo toast
+    private modalCtrl: ModalController // Controlador para manejo de modales
   ) {
-    this.loginForm = new FormGroup({ // Inicializa el formulario reactivo
-      email: new FormControl('', [Validators.required, Validators.email]), // Valida que el email sea requerido y tenga un formato correcto
-      password: new FormControl('', [Validators.required, Validators.minLength(6)]) // Valida que la contraseña sea requerida y tenga al menos 6 caracteres
+    // Inicializa el formulario con validaciones
+    this.loginForm = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]), // Campo de email con validaciones
+      password: new FormControl('', [Validators.required, Validators.minLength(6)]) // Campo de contraseña con validación de mínimo 6 caracteres
     });
   }
 
-  async abrirModal() { // Método para abrir el modal
-    const modal = await this.modalCtrl.create({ // Crea una instancia del modal
-      component: ModalComponent // Especifica el componente que se mostrará en el modal
+  /**
+   * Abre un modal con contenido adicional.
+   */
+  async abrirModal() {
+    const modal = await this.modalCtrl.create({
+      component: ModalComponent // Especifica el componente del modal
     });
-    return await modal.present(); // Presenta el modal
+    return await modal.present(); // Muestra el modal en pantalla
   }
 
+  /**
+   * Inicia sesión con email y contraseña.
+   */
   login() {
     const { email, password } = this.loginForm.value; // Obtiene los valores del formulario
     
-    this.authService.login(email, password) // Llama al servicio de autenticación para iniciar sesión
-      .then(() => { // Si la promesa se resuelve, muestra el toast de bienvenida y navega a la página de inicio
-        this.toastWelcome('top');//muestra el toast de bienvenida
-        this.router.navigate(['/home']); //navega a la página de inicio
+    this.authService.login(email, password) // Llama al servicio de autenticación
+      .then(() => { 
+        this.toastWelcome('top'); // Muestra un mensaje de bienvenida
+        this.router.navigate(['/home']); // Redirige a la página principal
       })
-      .catch(error => this.toastError('top'));//muestra el toast de error
+      .catch(() => this.toastError('top')); // Muestra mensaje de error si la autenticación falla
   }
 
-  register() { // Método para registrar un nuevo usuario
+  /**
+   * Registra un nuevo usuario en Firebase.
+   */
+  register() {
     const { email, password } = this.loginForm.value; // Obtiene los valores del formulario
     
-    this.authService.register(email, password) // Llama al servicio de autenticación para registrar un nuevo usuario
-      .then(() => {this.toastWelcome('top'); // Si la promesa se resuelve, muestra el toast de bienvenida
-      })  
-  
-      .catch(error => this.toastError('top'));  // Si ocurre un error, muestra el toast de error
+    this.authService.register(email, password) // Llama al servicio de autenticación para registro
+      .then(() => this.toastWelcome('top')) // Muestra mensaje de bienvenida si el registro es exitoso
+      .catch(() => this.toastError('top')); // Muestra mensaje de error si el registro falla
   }
 
-  loginGoogle() { // Método para iniciar sesión con Google
-    this.authService.loginWithGoogle() // Llama al servicio de autenticación para iniciar sesión con Google
+  /**
+   * Inicia sesión con Google.
+   */
+  loginGoogle() {
+    this.authService.loginWithGoogle() // Llama al servicio de autenticación con Google
       .then(() => {
-        this.toastWelcome('top'); // Muestra el toast de bienvenida
-        this.router.navigate(['/home']); // Navega a la página de inicio
+        this.toastWelcome('top'); // Muestra un mensaje de bienvenida
+        this.router.navigate(['/home']); // Redirige a la página principal
       })
-      .catch(error => this.toastError('top')); // Si ocurre un error, muestra el toast de error
-    }
+      .catch(() => this.toastError('top')); // Muestra mensaje de error si la autenticación falla
+  }
 
-toastError(position: 'top' | 'middle' | 'bottom') {//Toast para mensaje de error
-  this.toastController.create({
-    message: 'Usuario o contraseña invalidos', // Mensaje de error genérico
-    duration: 2500,
-    position: position
+  /**
+   * Muestra un mensaje de error en un toast.
+   * @param position Posición en la pantalla ('top', 'middle' o 'bottom')
+   */
+  toastError(position: 'top' | 'middle' | 'bottom') {
+    this.toastController.create({
+      message: 'Usuario o contraseña inválidos', // Mensaje de error genérico
+      duration: 2500, // Duración del toast en milisegundos
+      position: position // Ubicación del toast en pantalla
     }).then((toast: any) => toast.present());
   }
 
-  toastWelcome(position: 'top' | 'middle' | 'bottom') {//Toast para mensaje de bienvenida
+  /**
+   * Muestra un mensaje de bienvenida en un toast con el email del usuario.
+   * @param position Posición en la pantalla ('top', 'middle' o 'bottom')
+   */
+  toastWelcome(position: 'top' | 'middle' | 'bottom') {
     this.toastController.create({
-      message: `Bienvenido ${this.loginForm.value.email} a la app de cocktails`,//evalua el email del usuario y lo usa para mostrar el msj de bienvenida con ese mail
-      duration: 2500,
-      position: position
-      }).then((toast: any) => toast.present());
-    }
+      message: `Bienvenido ${this.loginForm.value.email} a la app de cócteles`, // Muestra el email en el mensaje
+      duration: 2500, // Duración del toast en milisegundos
+      position: position // Ubicación del toast en pantalla
+    }).then((toast: any) => toast.present());
+  }
 
-  mostrarPassword = false;
+  mostrarPassword = false; // Variable para alternar visibilidad de la contraseña
 
-  toggleMostrarContrasena() {  // Método para alternar la visibilidad de la contraseña
-  // Cambia el estado de mostrarPassword al valor opuesto
-    this.mostrarPassword = !this.mostrarPassword;
-}
+  /**
+   * Alterna la visibilidad de la contraseña en el formulario.
+   */
+  toggleMostrarContrasena() {
+    this.mostrarPassword = !this.mostrarPassword; // Cambia entre mostrar y ocultar contraseña
+  }
 
-get logoSrc(): string { // Método para obtener la ruta de la imagen del logo según el tema actual
-  // Obtiene el tema actual del body del documento
-  const theme = document.body.getAttribute('data-theme') || 'light';
-  return theme === 'dark' ? 'assets/logo-dark.png' : 'assets/logo-light.png'; // Retorna la ruta de la imagen del logo según el tema actual
-}
+  /**
+   * Obtiene la ruta de la imagen del logo según el tema actual.
+   * @returns URL del logo adaptado al tema (oscuro o claro).
+   */
+  get logoSrc(): string {
+    const theme = document.body.getAttribute('data-theme') || 'light'; // Obtiene el tema del sistema
+    return theme === 'dark' ? 'assets/logo-dark.png' : 'assets/logo-light.png'; // Retorna la imagen según el tema
+  }
 }

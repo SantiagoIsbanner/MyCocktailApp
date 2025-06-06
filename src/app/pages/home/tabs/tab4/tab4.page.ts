@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/services/auth.service';/*importo authservice para verificar data del user*/
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'; /*importo camera para tomar fotos*/
-import { Preferences } from '@capacitor/preferences'; /*importo preferences para guardar la foto del user*/
+import { AuthService } from 'src/app/services/auth.service'; // Servicio de autenticación para obtener datos del usuario
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'; // Librería para capturar fotos desde la cámara o galería
+import { Preferences } from '@capacitor/preferences'; // Almacenamiento de preferencias para guardar la foto del usuario
 
 @Component({
   standalone: false,
@@ -12,90 +12,118 @@ import { Preferences } from '@capacitor/preferences'; /*importo preferences para
 })
 export class Tab4Page implements OnInit {
 
-   userData: any = {}; /*variable para almacenar la data del user actual*/
-  isDarkMode = false; // variable para el modo oscuro
-  CameraSource = CameraSource; // variable para definir la fuente de la cámara
-  foto: string | null = null; // variable para almacenar la foto del usuario
-  bebidasGuardadas: any[] = []; // variable para almacenar las bebidas guardadas
-  cantidadbebidasGuardadas: number = 0; // variable para contar la cantidad de bebidas guardadas
+  userData: any = {}; // Variable para almacenar la información del usuario
+  isDarkMode = false; // Controla si el modo oscuro está activado o no
+  CameraSource = CameraSource; // Fuente de imágenes (cámara o galería)
+  foto: string | null = null; // Variable para almacenar la foto del usuario
+  bebidasGuardadas: any[] = []; // Lista de bebidas guardadas por el usuario
+  cantidadbebidasGuardadas: number = 0; // Número total de bebidas guardadas
 
   constructor(
-    private router: Router,
-    private authService: AuthService
+    private router: Router, // Servicio para redireccionar entre páginas
+    private authService: AuthService // Servicio de autenticación del usuario
   ) {
-    const savedTheme = localStorage.getItem('theme') || 'light'; // Obtiene el tema guardado o usa 'light' por defecto
-    this.isDarkMode = savedTheme === 'dark';  // Inicializa el modo oscuro según el tema guardado
+    // Obtiene el tema guardado en localStorage y lo aplica
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    this.isDarkMode = savedTheme === 'dark';
   }
 
-  async ionViewWillEnter() { // Método que se ejecuta cuando la vista está a punto de entrar
-    await this.cargarBebidasGuardadas(); // Carga las bebidas guardadas desde localStorage
+  /**
+   * Se ejecuta cada vez que el usuario entra a la vista para cargar las bebidas guardadas.
+   */
+  async ionViewWillEnter() {
+    await this.cargarBebidasGuardadas();
   }
-  //cargar bebidas guardadas
-  async cargarBebidasGuardadas() { // Método para cargar las bebidas guardadas desde localStorage
-    const bebidasGuardadasString = localStorage.getItem('bebidasGuardadas'); // Obtiene las bebidas guardadas como string desde localStorage
+
+  /**
+   * Carga las bebidas guardadas desde localStorage y actualiza el contador.
+   */
+  async cargarBebidasGuardadas() {
+    const bebidasGuardadasString = localStorage.getItem('bebidasGuardadas');
+    
+    // Si hay bebidas guardadas, se convierten a un array y se actualiza el contador
     if (bebidasGuardadasString) { 
-      this.bebidasGuardadas = JSON.parse(bebidasGuardadasString);//si hay bebidas las guardo
-      this.cantidadbebidasGuardadas = this.bebidasGuardadas.length;//cuento la cantidad
+      this.bebidasGuardadas = JSON.parse(bebidasGuardadasString);
+      this.cantidadbebidasGuardadas = this.bebidasGuardadas.length;
     } else {
-      this.bebidasGuardadas = [];//sino setea a 0
+      // Si no hay bebidas guardadas, se inicializa con un array vacío y contador en 0
+      this.bebidasGuardadas = [];
       this.cantidadbebidasGuardadas = 0;
     }
   }
 
+  /**
+   * Se ejecuta al iniciar el componente para obtener la información del usuario y cargar su foto.
+   */
   async ngOnInit() {
-    this.authService.getCurrentUser().then(user => { /*trae la data del user actual */
-      this.userData = user;
-      /*console.log(user);muestra la data del user actual en consola*/
-    });
+    try {
+      this.userData = await this.authService.getCurrentUser(); // Obtiene el usuario autenticado
+    } catch (error) {
+      console.error("Error obteniendo usuario:", error);
+    }
 
+    // Obtiene la foto guardada en preferencias
     const storedPhoto = await Preferences.get({ key: 'user-photo' });
-      if (storedPhoto.value) {
-        this.foto = storedPhoto.value;
-      }
+    if (storedPhoto.value) {
+      this.foto = storedPhoto.value;
+    }
   }
 
-  // Método para generar nombre de usuario a partir del email
+  /**
+   * Genera un nombre de usuario basado en el email.
+   * @returns Nombre de usuario formateado.
+   */
   getUsernameFromEmail(): string {
     if (!this.userData?.email) return 'Usuario';
-    
-    // Extrae la parte antes del @ y reemplaza puntos por espacios
+
+    // Extrae la parte antes del @ y reemplaza puntos por espacios, capitalizando cada palabra
     return this.userData.email.split('@')[0]
       .replace(/\./g, ' ')
-      .replace(/\b\w/g, (l: string) => l.toUpperCase()); // Capitaliza cada palabra
+      .replace(/\b\w/g, (l: string) => l.toUpperCase());
   }
 
-  logout() {/*cierre de sesion*/
-    this.authService.logout() // Cierra la sesión del usuario
-    .then(()=>this.router.navigate(['/login'])) // Redirige al usuario a la página de login
-    .catch(error=>alert("Error al cerrar sesion: "+error.message))
-    }
-    
-  toggleDarkMode() { // Método para alternar entre modo oscuro y claro
+  /**
+   * Cierra la sesión del usuario y lo redirige a la página de inicio de sesión.
+   */
+  logout() {
+    this.authService.logout()
+      .then(() => this.router.navigate(['/login'])) // Redirige al usuario al login después de cerrar sesión
+      .catch(error => alert("Error al cerrar sesión: " + error.message));
+  }
+
+  /**
+   * Alterna entre modo oscuro y claro.
+   */
+  toggleDarkMode() {
     this.isDarkMode = !this.isDarkMode;
-    const theme = this.isDarkMode ? 'dark' : 'light'; // Define el tema según el estado del modo oscuro
-    document.body.setAttribute('data-theme', theme); // Aplica el tema al body del documento
-    localStorage.setItem('theme', theme); // Guarda el tema en localStorage
+    const theme = this.isDarkMode ? 'dark' : 'light';
+
+    // Aplica el tema al documento y lo guarda en localStorage
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
   }
 
+  /**
+   * Captura una foto desde la cámara o galería y la guarda en preferencias.
+   * @param source Fuente de la foto (cámara o galería)
+   */
   async takePhoto(source: CameraSource) {
-  try {
-    const image = await Camera.getPhoto({ // Obtiene una foto de la cámara o galería
-      quality: 90,
-      allowEditing: false,
-      resultType: CameraResultType.Base64,
-      source
-    });
+    try {
+      const image = await Camera.getPhoto({
+        quality: 90, // Calidad de imagen
+        allowEditing: false, // No permite edición antes de guardar
+        resultType: CameraResultType.Base64, // Formato en base64
+        source
+      });
 
-    this.foto = 'data:image/jpeg;base64,' + image.base64String;
+      // Almacena la foto en la variable y en preferencias para que persista
+      this.foto = `data:image/jpeg;base64,${image.base64String}`;
+      await Preferences.set({ key: 'user-photo', value: this.foto });
 
-    await Preferences.set({ 
-      key: 'user-photo', // Guarda la foto en Preferences
-      value: this.foto
-    });
-  } catch (error) {
-    console.error('Error al obtener la imagen:', error);
+    } catch (error) {
+      alert("No se pudo capturar la foto. Asegúrate de que la cámara está disponible.");
+      console.error('Error al obtener la imagen:', error);
+    }
   }
-}
 
 }
-

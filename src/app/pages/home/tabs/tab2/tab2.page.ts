@@ -6,8 +6,7 @@ import { FavoritosService } from 'src/app/services/favoritos.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { IonContent } from '@ionic/angular';
 import { ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Component({
   standalone: false,
@@ -17,41 +16,40 @@ import { of } from 'rxjs';
 })
 export class Tab2Page {
 
-  @ViewChild('contenido', { static: false }) content!: IonContent;
+  @ViewChild('contenido', { static: false }) content!: IonContent; // Referencia al contenido para desplazamiento automático
 
-  searchType: 'name' | 'ingredient' = 'name';  // Tipo más restrictivo
-  searchQuery: string = '';
-  cocktails: any[] = [];
-  isModalOpen: boolean = false;
-  selectedCocktail: any = null;
-  cocktailIngredients: { ingredient: string; measure: string }[] = [];
-  randomCocktail: any = null;
+  searchType: 'name' | 'ingredient' = 'name';  // Tipo de búsqueda (nombre o ingrediente)
+  searchQuery: string = ''; // Texto de búsqueda ingresado por el usuario
+  cocktails: any[] = []; // Lista de cócteles encontrados
+  isModalOpen: boolean = false; // Estado de apertura del modal
+  selectedCocktail: any = null; // Cóctel seleccionado para mostrar en el modal
+  cocktailIngredients: { ingredient: string; measure: string }[] = []; // Ingredientes del cóctel seleccionado
+  randomCocktail: any = null; // Cóctel aleatorio obtenido desde la API
 
-  cocktails$: Observable<any[]> = of([]); 
-  currentPage = 1;
-  perPage = 4;
-  totalPages = 1;
+  cocktails$: Observable<any[]> = of([]); // Observable para el manejo de cócteles paginados
+  currentPage = 1; // Página actual
+  perPage = 4; // Cantidad de cócteles por página
+  totalPages = 1; // Número total de páginas
 
   constructor(
-    private authService: AuthService,
-    private bebidasService: BebidasService,
-    private modalCtrl: ModalController,
-    private cocktailService: CocktailService,
-    private favoritosService: FavoritosService,
-    private alertController: AlertController
+    private authService: AuthService, // Servicio de autenticación
+    private bebidasService: BebidasService, // Servicio de bebidas
+    private modalCtrl: ModalController, // Controlador de modal
+    private cocktailService: CocktailService, // Servicio de cócteles
+    private alertController: AlertController // Controlador de alertas
   ) {}
 
+  // Método para buscar cócteles por nombre o ingrediente
   searchCocktail() {
-    if (!this.searchQuery.trim()) {
+    if (!this.searchQuery.trim()) { // Verifica que el campo de búsqueda no esté vacío
       console.log('El campo de búsqueda está vacío.');
       return;
     }
 
-    // Resetear resultados antes de buscar
-    this.cocktails = [];
-    this.selectedCocktail = null;
+    this.cocktails = []; // Limpia resultados anteriores
+    this.selectedCocktail = null; // Reinicia el cóctel seleccionado
 
-    if (this.searchType === 'name') {
+    if (this.searchType === 'name') { // Búsqueda por nombre
       console.log('Buscando por nombre:', this.searchQuery);
       this.cocktailService.searchCocktailByName(this.searchQuery).subscribe(result => {
         if (result.drinks) {
@@ -63,15 +61,13 @@ export class Tab2Page {
           this.loadBebidasPaginadas();
         } else {
           console.log('No se encontraron cócteles.');
-          this.cocktails = [];
         }
       });
-    } else if (this.searchType === 'ingredient') {
+    } else if (this.searchType === 'ingredient') { // Búsqueda por ingrediente
       console.log('Filtrando por ingrediente:', this.searchQuery);
-      this.cocktails = [];
       this.cocktailService.filterCocktailByIngredient(this.searchQuery).subscribe(result => {
         if (Array.isArray(result.drinks)) {
-          // Para evitar problemas con asincronía, usar Promise.all para obtener detalles completos
+          // Obtiene detalles completos de cada cóctel usando Promise.all
           const promises = result.drinks.map((drink: any) =>
             this.cocktailService.searchCocktailByName(drink.strDrink).toPromise()
           );
@@ -79,48 +75,47 @@ export class Tab2Page {
           Promise.all(promises).then(fullResults => {
             this.cocktails = fullResults
               .filter(res => res.drinks && res.drinks.length > 0)
-              .map(res => {
-                const cocktail = res.drinks[0];
-                return {
-                  ...cocktail,
-                  ingredients: this.extractIngredients(cocktail)
-                }});
-                this.currentPage = 1;
-                this.loadBebidasPaginadas();
+              .map(res => ({
+                ...res.drinks[0],
+                ingredients: this.extractIngredients(res.drinks[0])
+              }));
+            this.currentPage = 1;
+            this.loadBebidasPaginadas();
           }).catch(error => {
             console.error('Error al obtener detalles completos:', error);
           });
         } else {
           console.log('No se encontraron cócteles con ese ingrediente.');
-          this.cocktails = [];
         }
       });
     }
   }
 
+  // Alterna la visibilidad de los detalles de un cóctel
   toggleDetails(cocktail: any) {
     cocktail.showDetails = !cocktail.showDetails;
   }
 
-  // Extrae ingredientes y cantidades del objeto cocktail
-extractIngredients(cocktail: any): { ingredient: string; measure: string }[] {
-  const ingredients: { ingredient: string; measure: string }[] = [];
+  // Extrae ingredientes y cantidades de un cóctel
+  extractIngredients(cocktail: any): { ingredient: string; measure: string }[] {
+    const ingredients: { ingredient: string; measure: string }[] = [];
 
-  for (let i = 1; i <= 15; i++) {
-    const ingredient = cocktail[`strIngredient${i}`];
-    const measure = cocktail[`strMeasure${i}`];
+    for (let i = 1; i <= 15; i++) {
+      const ingredient = cocktail[`strIngredient${i}`];
+      const measure = cocktail[`strMeasure${i}`];
 
-    if (ingredient) {
-      ingredients.push({
-        ingredient,
-        measure: measure ? measure.trim() : 'Cantidad no especificada'
-      });
+      if (ingredient) {
+        ingredients.push({
+          ingredient,
+          measure: measure ? measure.trim() : 'Cantidad no especificada'
+        });
+      }
     }
+
+    return ingredients;
   }
 
-  return ingredients;
-}
-
+  // Obtiene un cóctel aleatorio
   getRandomCocktail() {
     this.cocktailService.getRandomCocktail().subscribe(
       (data) => {
@@ -133,46 +128,48 @@ extractIngredients(cocktail: any): { ingredient: string; measure: string }[] {
     );
   }
 
+  // Paginación: carga cócteles por página
   loadBebidasPaginadas() {
-  // Calcular totalPages
-  this.totalPages = Math.ceil(this.cocktails.length / this.perPage);
+    this.totalPages = Math.ceil(this.cocktails.length / this.perPage); // Calcula número total de páginas
+    const start = (this.currentPage - 1) * this.perPage;
+    const paginadas = this.cocktails.slice(start, start + this.perPage);
+    this.cocktails$ = of(paginadas);
+  }
 
-  const start = (this.currentPage - 1) * this.perPage;
-  const paginadas = this.cocktails.slice(start, start + this.perPage);
-
-  this.cocktails$ = of(paginadas);
-}
-
+  // Cambia a una página específica
   goToPage(page: number) {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
       this.loadBebidasPaginadas();
       setTimeout(() => {
-      this.content.scrollToTop(300);
-    }, 100);
+        this.content.scrollToTop(300); // Desplazamiento automático
+      }, 100);
     }
   }
 
+  // Avanza a la siguiente página
   nextPage() {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
       this.loadBebidasPaginadas();
       setTimeout(() => {
-      this.content.scrollToTop(300);
-    }, 100);
+        this.content.scrollToTop(300);
+      }, 100);
     }
   }
 
+  // Retrocede a la página anterior
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
       this.loadBebidasPaginadas();
       setTimeout(() => {
-      this.content.scrollToTop(300);
-    }, 100);
+        this.content.scrollToTop(300);
+      }, 100);
     }
   }
 
+  // Abre el modal con detalles del cóctel seleccionado
   setOpen(state: boolean, cocktail?: any) {
     this.isModalOpen = state;
     if (cocktail) {

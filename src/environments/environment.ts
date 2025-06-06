@@ -1,11 +1,4 @@
 
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 export const environment = {
   production: false,
   firebaseConfig: {
@@ -15,6 +8,9 @@ export const environment = {
     storageBucket: "appcocteles-2ef66.firebasestorage.app",
     messagingSenderId: "814145806021",
     appId: "1:814145806021:web:f895496595e0c0fb8a1aac",
-    measurementId: "G-2EFFR3N792"
+    measurementId: "G-2EFFR3N792",
+    clientId: "814145806021-e3g62q0i84k3h20moi9abvru7tl7sgsd.apps.googleusercontent.com"
+  
   }
+  
 };
